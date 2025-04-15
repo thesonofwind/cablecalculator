@@ -554,7 +554,30 @@
             '0.5m': [0.95, 0.90, 0.85, 0.85, 0.80, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74],
             '1.0m': [0.95, 0.95, 0.90, 0.90, 0.90, 0.88, 0.88, 0.87, 0.86, 0.86, 0.85]
         };
+
+    function interpolateGroupingFactor(table, clearance, groupCount) {
+    const knownGroups = [2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 20];
+    const factors = table[clearance];
+    
+    for (let i = 0; i < knownGroups.length - 1; i++) {
+        const lower = knownGroups[i];
+        const upper = knownGroups[i + 1];
         
+        if (groupCount === lower) return factors[i];
+        if (groupCount === upper) return factors[i + 1];
+        
+        if (groupCount > lower && groupCount < upper) {
+            // Linear interpolation
+            const interpolated = factors[i] + 
+                (factors[i + 1] - factors[i]) * ((groupCount - lower) / (upper - lower));
+            return interpolated;
+        }
+    }
+    
+    // Fallback if out of range
+    return groupCount < knownGroups[0] ? factors[0] : factors[factors.length - 1];
+}
+
         // Calculate button handler
         function calculate() {
             // Get input values
@@ -685,13 +708,8 @@
                     else if (cableClearance === '0.25m') clearance = '0.25m';
                     else clearance = '0.5m';
                     
-                    if (cablesRequired <= 6) {
-                        groupReductionFactor = burialReduction[clearance][0];
-                    } else if (cablesRequired <= 12) {
-                        groupReductionFactor = burialReduction[clearance][5];
-                    } else {
-                        groupReductionFactor = burialReduction[clearance][10];
-                    }
+                    groupReductionFactor = interpolateGroupingFactor(burialReduction, clearance, cablesRequired);
+
                 } else {
                     // Standard grouping (Table B.52.17)
                     // Find the closest standard grouping value
