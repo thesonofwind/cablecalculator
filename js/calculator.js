@@ -18,7 +18,7 @@ function getBaseCapacity(cableType, conductor, method, size) {
         } else if (cableType.startsWith('XLPE_')) {
             tableSource = 'XLPE_EFG';
         }
-        // Note: Mineral Insulated cables typically use Method C, not E/F/G here. Add checks if needed.
+        // Add specific checks if Mineral Insulated needs different handling for EFG
     }
 
     // Check if data path exists
@@ -152,19 +152,27 @@ function getGroupFactorGeneral(groupCount) {
         applicableCount = knownCounts[knownCounts.length - 1];
     }
 
-    return data.GROUP_REDUCTION_GENERAL[applicableCount.toString()];
+    // Ensure the count exists as a key (it should if logic above is correct)
+    const factor = data.GROUP_REDUCTION_GENERAL[applicableCount.toString()];
+    if(factor === undefined) {
+        console.warn(`Could not find general grouping factor for count ${groupCount}, applicable ${applicableCount}. Using 1.0`);
+        return 1.0; // Fallback, though should not happen
+    }
+    return factor;
 }
 
 
 // Main Calculation Function
 export function performCalculation(inputs) {
     const {
-        loadCurrent, installationMethod, cableType, conductorMaterial,
+        loadCurrent, // Keep loadCurrent from inputs
+        installationMethod, cableType, conductorMaterial,
         cableSize, ambientAirTemp, groundTemp, soilResistivity,
         ductClearance, burialClearance
     } = inputs;
 
     let results = {
+        loadCurrent: loadCurrent, // Added loadCurrent to results
         baseCapacity: null,
         tempCorrectionFactor: 1,
         tempCorrectionDescription: 'N/A',
@@ -201,10 +209,10 @@ export function performCalculation(inputs) {
         results.soilCorrectedCapacity = results.tempCorrectedCapacity * results.soilCorrectionFactor;
 
         // 4. Grouping Iteration
-        let currentCapacity = results.soilCorrectedCapacity;
-        results.finalCapacityPerCable = currentCapacity; // Initial assumption
+        let capacityBeforeGrouping = results.soilCorrectedCapacity; // This is Iz_corrected
+        results.finalCapacityPerCable = capacityBeforeGrouping; // Initial assumption
         let iterationLog = '<h4>Grouping Calculation Steps:</h4>';
-        let cablesNeeded = Math.ceil(loadCurrent / currentCapacity);
+        let cablesNeeded = Math.ceil(loadCurrent / capacityBeforeGrouping);
         if (cablesNeeded <= 0) cablesNeeded = 1;
         results.cablesRequired = cablesNeeded; // Initial estimate
 
@@ -233,7 +241,7 @@ export function performCalculation(inputs) {
 
                 results.groupReductionFactor = groupFactor; // Store the latest factor
                 results.groupingTableUsed = tableDesc;
-                results.finalCapacityPerCable = currentCapacity * groupFactor; // De-rated capacity
+                results.finalCapacityPerCable = capacityBeforeGrouping * groupFactor; // De-rated capacity
 
                 if (results.finalCapacityPerCable <= 0) {
                      iterationLog += `<div class="iteration error">Error: Capacity per cable became zero or negative in iteration ${iterations}.</div>`;
@@ -247,7 +255,7 @@ export function performCalculation(inputs) {
                     <div class="iteration">
                         <strong>Iteration ${iterations}:</strong><br>
                         - Assuming ${previousCables} cable(s) -> Group Factor (${tableDesc}): ${groupFactor.toFixed(3)}<br>
-                        - Resulting Capacity/Cable: ${currentCapacity.toFixed(1)} * ${groupFactor.toFixed(3)} = ${results.finalCapacityPerCable.toFixed(1)} A<br>
+                        - Resulting Capacity/Cable: ${capacityBeforeGrouping.toFixed(1)} * ${groupFactor.toFixed(3)} = ${results.finalCapacityPerCable.toFixed(1)} A<br>
                         - Cables needed: ${loadCurrent.toFixed(1)} / ${results.finalCapacityPerCable.toFixed(1)} = ${cablesNeeded}
                     </div>
                 `;
@@ -260,10 +268,10 @@ export function performCalculation(inputs) {
              results.cablesRequired = cablesNeeded; // Final number of cables
 
         } else {
-            iterationLog += `<div class="iteration">Only 1 cable required based on corrected capacity (${currentCapacity.toFixed(1)} A). No grouping reduction applied.</div>`;
+            iterationLog += `<div class="iteration">Only 1 cable required based on corrected capacity (${capacityBeforeGrouping.toFixed(1)} A). No grouping reduction applied.</div>`;
             results.groupReductionFactor = 1.0;
             results.groupingTableUsed = 'N/A (1 cable)';
-            results.finalCapacityPerCable = currentCapacity; // No change
+            results.finalCapacityPerCable = capacityBeforeGrouping; // No change
         }
 
         results.iterationSteps = iterationLog;
