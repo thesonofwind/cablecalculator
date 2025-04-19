@@ -11,17 +11,20 @@
 
     <div class="container">
         <div class="tabs">
+            <!-- The data-tab attributes are used by ui.js for tab switching -->
             <div id="tab-calculator" class="tab active" data-tab="calculator">Calculator</div>
             <div id="tab-reference" class="tab" data-tab="reference">Reference Tables</div>
             <div id="tab-methods" class="tab" data-tab="methods">Installation Methods</div>
         </div>
 
+        <!-- ====== Calculator Tab Content ====== -->
         <div id="calculator" class="tab-content active">
             <h2>Cable Calculation</h2>
             <form id="calculator-form">
+                <!-- Input fields -->
                 <div class="form-group">
                     <label for="loadCurrent">Load Current (A):</label>
-                    <input type="number" id="loadCurrent" step="any" min="0.01" required>
+                    <input type="number" id="loadCurrent" step="1" min="0.01" required>
                 </div>
 
                 <div class="form-group">
@@ -81,6 +84,7 @@
                     </select>
                 </div>
 
+                 <!-- Conditionally shown inputs -->
                 <div id="ambientAirGroup" class="form-group">
                      <label for="ambientAirTemp">Ambient Air Temperature (°C):</label>
                      <select id="ambientAirTemp">
@@ -107,7 +111,6 @@
                          <option value="3.0">3.0</option>
                      </select>
                 </div>
-
                 <div id="ductClearanceGroup" class="form-group" style="display:none;">
                      <label for="ductClearance">Duct Clearance (Method D1 - Table B.52.19):</label>
                      <select id="ductClearance">
@@ -127,9 +130,11 @@
                 <button type="submit">Calculate</button>
             </form>
 
+            <!-- ====== Results Area ====== -->
             <div id="result" class="result" style="display:none;">
                 <h3>Results</h3>
                 <p><strong>Selected Cable Capacity (Base):</strong> <span id="selectedCapacity"></span> A</p>
+                <!-- The detailed breakdown below replaces the simple lines for corrected capacities -->
                 <p><strong>After Temperature Correction:</strong> <span id="tempCorrectedCapacity"></span></p>
                 <p><strong>After Soil Resistivity Correction (if applicable):</strong> <span id="soilCorrectedCapacity"></span></p>
                 <p><strong>Final Grouping Reduction Factor:</strong> <span id="finalGroupFactor"></span></p>
@@ -137,14 +142,22 @@
                 <p><strong>Number of Cables Required:</strong> <span id="cablesRequired"></span></p>
                 <p><strong>Total Capacity:</strong> <span id="totalCapacity"></span> A</p>
 
+                <!-- Area for calculation breakdown added by ui.js -->
                 <div id="calculation-breakdown" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;"></div>
 
+                <!-- Area for grouping iterations added by ui.js -->
                 <div id="iterationSteps"></div>
 
+                <!-- Area for error messages added by ui.js -->
                 <div id="error-message" style="color: red; margin-top: 10px; font-weight:bold;"></div>
             </div>
-        </div>
+            <!-- ====== End Results Area ====== -->
 
+        </div>
+        <!-- ====== End Calculator Tab Content ====== -->
+
+
+        <!-- ====== Reference Tab Content ====== -->
         <div id="reference" class="tab-content">
              <h2>Reference Tables</h2>
             <p>Select a table to view:</p>
@@ -160,12 +173,15 @@
                  <option value="B.52.18">B.52.18 - Direct burial reduction factors (D2)</option>
                  <option value="B.52.19">B.52.19 - Duct burial reduction factors (D1)</option>
             </select>
-            <div id="tableDisplay"></div>
+            <div id="tableDisplay"></div> <!-- Table content added by ui.js -->
         </div>
+        <!-- ====== End Reference Tab Content ====== -->
 
+        <!-- ====== Methods Tab Content ====== -->
         <div id="methods" class="tab-content">
               <h2>Installation Methods</h2>
             <p>Detailed descriptions of installation methods referenced in IEC 60364-5-52.</p>
+            <!-- Static content for method descriptions -->
             <div id="methodsList">
                  <h3>Method A1</h3> <p>Insulated conductors or single-core cables in conduit in a thermally insulated wall.</p>
                  <h3>Method A2</h3> <p>Multi-core cable in conduit in a thermally insulated wall.</p>
@@ -179,7 +195,9 @@
                  <h3>Method G</h3> <p>Single-core cables, touching in free air.</p>
             </div>
         </div>
-    </div>
+        <!-- ====== End Methods Tab Content ====== -->
+
+    </div> <!-- End container -->
 
     <script type="module" src="js/main.js"></script>
 </body>
