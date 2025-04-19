@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IEC 60364-5-52 Cable Sizing Calculator</title>
-    <link rel="stylesheet" href="style.css"> {/* Link the CSS file */}
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>IEC 60364-5-52 Cable Sizing Calculator</h1>
 
     <div class="container">
         <div class="tabs">
-            {/* Add unique IDs for easier selection */}
+            {/* These data-tab attributes are used by JS */}
             <div id="tab-calculator" class="tab active" data-tab="calculator">Calculator</div>
             <div id="tab-reference" class="tab" data-tab="reference">Reference Tables</div>
             <div id="tab-methods" class="tab" data-tab="methods">Installation Methods</div>
         </div>
 
-        {/* Calculator Tab */}
+        {/* Calculator Tab Content */}
         <div id="calculator" class="tab-content active">
             <h2>Cable Calculation</h2>
-            <form id="calculator-form"> {/* Wrap inputs in a form */}
+            <form id="calculator-form">
+                {/* Input fields ... */}
                 <div class="form-group">
                     <label for="loadCurrent">Load Current (A):</label>
                     <input type="number" id="loadCurrent" step="0.1" min="0.01" required>
@@ -33,7 +34,7 @@
                         <option value="A2">A2 - Multi-core cable in conduit in thermally insulated wall</option>
                         <option value="B1">B1 - Insulated conductors in conduit on wooden/masonry wall</option>
                         <option value="B2">B2 - Multi-core cable in conduit on wooden/masonry wall</option>
-                        <option value="C" selected>C - Single/multi-core cable on wooden wall</option> {/* Default C */}
+                        <option value="C" selected>C - Single/multi-core cable on wooden wall</option>
                         <option value="D1">D1 - Multi-core cable in ducts in ground</option>
                         <option value="D2">D2 - Sheathed cables direct in ground</option>
                         <option value="E">E - Multi-core cable in free air</option>
@@ -49,10 +50,7 @@
                         <option value="PVC_2">PVC insulation, two loaded conductors</option>
                         <option value="PVC_3">PVC insulation, three loaded conductors</option>
                         <option value="XLPE_2">XLPE/EPR insulation, two loaded conductors</option>
-                        <option value="XLPE_3" selected>XLPE/EPR insulation, three loaded conductors</option> {/* Default XLPE 3 */}
-                        {/* Removed Mineral for initial simplicity, can be added back */}
-                        {/* <option value="Mineral_PVC">Mineral insulation, PVC covered or bare exposed</option> */}
-                        {/* <option value="Mineral_bare">Mineral insulation, bare not exposed</option> */}
+                        <option value="XLPE_3" selected>XLPE/EPR insulation, three loaded conductors</option>
                     </select>
                 </div>
 
@@ -72,7 +70,7 @@
                         <option value="4">4</option>
                         <option value="6">6</option>
                         <option value="10">10</option>
-                        <option value="16" selected>16</option> {/* Default 16 */}
+                        <option value="16" selected>16</option>
                         <option value="25">25</option>
                         <option value="35">35</option>
                         <option value="50">50</option>
@@ -88,7 +86,6 @@
 
                 {/* Temperature/Soil Inputs (conditionally shown by JS) */}
                 <div id="ambientAirGroup" class="form-group">
-                    {/* ... (keep ambientAirTemp select) ... */}
                      <label for="ambientAirTemp">Ambient Air Temperature (°C):</label>
                      <select id="ambientAirTemp">
                          <option value="10">10</option> <option value="15">15</option> <option value="20">20</option>
@@ -98,7 +95,6 @@
                      </select>
                 </div>
                 <div id="groundTempGroup" class="form-group" style="display:none;">
-                     {/* ... (keep groundTemp select) ... */}
                      <label for="groundTemp">Ground Temperature (°C):</label>
                      <select id="groundTemp">
                          <option value="10">10</option> <option value="15">15</option> <option value="20" selected>20</option>
@@ -108,7 +104,6 @@
                      </select>
                 </div>
                 <div id="soilResistivityGroup" class="form-group" style="display:none;">
-                    {/* ... (keep soilResistivity select) ... */}
                     <label for="soilResistivity">Soil Thermal Resistivity (K·m/W):</label>
                      <select id="soilResistivity">
                          <option value="0.5">0.5</option> <option value="0.7">0.7</option> <option value="1.0">1.0</option>
@@ -119,7 +114,6 @@
 
                 {/* Clearance Inputs (conditionally shown by JS) */}
                 <div id="ductClearanceGroup" class="form-group" style="display:none;">
-                    {/* ... (keep ductClearance select) ... */}
                      <label for="ductClearance">Duct Clearance (Method D1 - Table B.52.19):</label>
                      <select id="ductClearance">
                          <option value="touching">Ducts Touching</option> <option value="0.25m">0.25 m spacing</option>
@@ -127,7 +121,6 @@
                      </select>
                 </div>
                 <div id="burialClearanceGroup" class="form-group" style="display:none;">
-                    {/* ... (keep burialClearance select) ... */}
                     <label for="burialClearance">Cable Clearance (Method D2 - Table B.52.18):</label>
                      <select id="burialClearance">
                          <option value="touching">Cables Touching</option> <option value="1d">1× cable diameter</option>
@@ -136,7 +129,7 @@
                      </select>
                 </div>
 
-                <button type="submit">Calculate</button> {/* Change to type="submit" */}
+                <button type="submit">Calculate</button>
             </form>
 
             {/* Result Area */}
@@ -150,13 +143,14 @@
                 <p><strong>Number of Cables Required:</strong> <span id="cablesRequired"></span></p>
                 <p><strong>Total Capacity:</strong> <span id="totalCapacity"></span> A</p>
                 <div id="iterationSteps"></div>
-                <div id="error-message" style="color: red; margin-top: 10px;"></div> {/* Error display */}
+                <div id="error-message" style="color: red; margin-top: 10px;"></div>
             </div>
         </div>
 
-        {/* Reference Tab */}
+        {/* Reference Tab Content */}
         <div id="reference" class="tab-content">
-            <h2>Reference Tables</h2>
+             {/* ... Reference table selector and display div ... */}
+             <h2>Reference Tables</h2>
             <p>Select a table to view:</p>
             <select id="tableSelector">
                  <option value="B.52.2">B.52.2 - PVC, 2 conductors, 70°C</option>
@@ -173,10 +167,10 @@
             <div id="tableDisplay"></div>
         </div>
 
-        {/* Methods Tab */}
+        {/* Methods Tab Content */}
         <div id="methods" class="tab-content">
-            {/* ... (keep existing methods content) ... */}
-            <h2>Installation Methods</h2>
+             {/* ... Methods descriptions ... */}
+              <h2>Installation Methods</h2>
             <p>Detailed descriptions of installation methods referenced in IEC 60364-5-52.</p>
             <div id="methodsList">
                  <h3>Method A1</h3> <p>Insulated conductors or single-core cables in conduit in a thermally insulated wall.</p>
@@ -187,13 +181,12 @@
                  <h3>Method D1</h3> <p>Multi-core cable in conduit or in cable ducting in the ground.</p>
                  <h3>Method D2</h3> <p>Sheathed single-core or multi-core cables direct in the ground (with or without added mechanical protection).</p>
                  <h3>Method E</h3> <p>Multi-core cable in free air.</p>
-                 <h3>Method F</h3> <p>Clearance to wall not less than 0.3 times cable diameter.</p>
+                 <h3>Method F</h3> <p>Single core/Multi-core cable in free air with clearance to wall ≥ 0.3 times cable diameter.</p>
                  <h3>Method G</h3> <p>Single-core cables, touching in free air.</p>
             </div>
         </div>
     </div>
 
-    {/* Load the main JS module */}
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
