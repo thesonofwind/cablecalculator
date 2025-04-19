@@ -11,17 +11,15 @@
 
     <div class="container">
         <div class="tabs">
-            {/* These data-tab attributes are used by JS */}
+            {/* data-tab attributes are used by JS */}
             <div id="tab-calculator" class="tab active" data-tab="calculator">Calculator</div>
             <div id="tab-reference" class="tab" data-tab="reference">Reference Tables</div>
             <div id="tab-methods" class="tab" data-tab="methods">Installation Methods</div>
         </div>
 
-        {/* Calculator Tab Content */}
         <div id="calculator" class="tab-content active">
             <h2>Cable Calculation</h2>
             <form id="calculator-form">
-                {/* Input fields ... */}
                 <div class="form-group">
                     <label for="loadCurrent">Load Current (A):</label>
                     <input type="number" id="loadCurrent" step="0.1" min="0.01" required>
@@ -84,7 +82,6 @@
                     </select>
                 </div>
 
-                {/* Temperature/Soil Inputs (conditionally shown by JS) */}
                 <div id="ambientAirGroup" class="form-group">
                      <label for="ambientAirTemp">Ambient Air Temperature (°C):</label>
                      <select id="ambientAirTemp">
@@ -112,7 +109,6 @@
                      </select>
                 </div>
 
-                {/* Clearance Inputs (conditionally shown by JS) */}
                 <div id="ductClearanceGroup" class="form-group" style="display:none;">
                      <label for="ductClearance">Duct Clearance (Method D1 - Table B.52.19):</label>
                      <select id="ductClearance">
@@ -132,7 +128,6 @@
                 <button type="submit">Calculate</button>
             </form>
 
-            {/* Result Area */}
             <div id="result" class="result" style="display:none;">
                 <h3>Results</h3>
                 <p><strong>Selected Cable Capacity (Base):</strong> <span id="selectedCapacity"></span> A</p>
@@ -147,9 +142,7 @@
             </div>
         </div>
 
-        {/* Reference Tab Content */}
         <div id="reference" class="tab-content">
-             {/* ... Reference table selector and display div ... */}
              <h2>Reference Tables</h2>
             <p>Select a table to view:</p>
             <select id="tableSelector">
@@ -167,9 +160,7 @@
             <div id="tableDisplay"></div>
         </div>
 
-        {/* Methods Tab Content */}
         <div id="methods" class="tab-content">
-             {/* ... Methods descriptions ... */}
               <h2>Installation Methods</h2>
             <p>Detailed descriptions of installation methods referenced in IEC 60364-5-52.</p>
             <div id="methodsList">
