@@ -26,7 +26,7 @@ const DOMElements = {
     cablesRequired: document.getElementById('cablesRequired'),
     totalCapacity: document.getElementById('totalCapacity'),
     iterationSteps: document.getElementById('iterationSteps'),
-    calculationBreakdown: document.getElementById('calculation-breakdown'), // Cache the new div
+    calculationBreakdown: document.getElementById('calculation-breakdown'),
 };
 
 // --- Tab Handling ---
@@ -209,59 +209,69 @@ export function displayResults(results) {
     const formatValue = (val, digits = 1) => (val !== null && !isNaN(val)) ? val.toFixed(digits) : 'N/A';
     const formatFactor = (val, digits = 3) => (val !== null && !isNaN(val)) ? val.toFixed(digits) : 'N/A'; // Use 3 digits for factors
 
-    // Populate standard results
+    // --- Populate Standard Results (Top section) ---
     DOMElements.selectedCapacity.textContent = formatValue(results.baseCapacity);
-    // Clear these lines as they are shown in the breakdown now
-    DOMElements.tempCorrectedCapacity.textContent = '';
-    DOMElements.soilCorrectedCapacity.textContent = '';
-    // Display grouping factor and final results
+    // Clear intermediate capacity lines as they are detailed in the breakdown
+    DOMElements.tempCorrectedCapacity.textContent = ''; // Content moved to breakdown
+    DOMElements.soilCorrectedCapacity.textContent = ''; // Content moved to breakdown
+    // Display final grouping factor and results
     DOMElements.finalGroupFactor.textContent = `${formatFactor(results.groupReductionFactor)} (${results.groupingTableUsed})`;
     DOMElements.finalCapacity.textContent = formatValue(results.finalCapacityPerCable);
     DOMElements.cablesRequired.textContent = results.cablesRequired ?? 'N/A';
     DOMElements.totalCapacity.textContent = formatValue(results.totalCapacity);
-    // Display grouping iterations *after* breakdown
-    DOMElements.iterationSteps.innerHTML = results.iterationSteps || '';
 
-    // Build and display calculation breakdown
+
+    // --- Build and Display Calculation Breakdown ---
     let breakdownHTML = '<h4>Calculation Breakdown:</h4>';
-    breakdownHTML += `<p><small><i>Formula: I<sub>z</sub> = I<sub>b</sub> * k<sub>temp</sub> * k<sub>soil</sub> * k<sub>group</sub></i></small></p>`;
+    breakdownHTML += `<p><small><i>Base Formula: I<sub>z</sub> = I<sub>b</sub> * k<sub>temp</sub> * k<sub>soil</sub> * k<sub>group</sub></i></small></p>`;
+    breakdownHTML += `<p><small><i>Verification: N * I<sub>z</sub> ≥ I<sub>L</sub>   (where N = Number of Cables, I<sub>L</sub> = Load Current)</i></small></p>`;
+
 
     // 1. Base Capacity
     breakdownHTML += `<p><strong>1. Base Capacity (I<sub>b</sub>):</strong> ${formatValue(results.baseCapacity)} A</p>`;
 
     // 2. Temperature Correction
-    breakdownHTML += `<p><strong>2. Temp. Correction (k<sub>temp</sub>):</strong> ${formatFactor(results.tempCorrectionFactor)} <small>(${results.tempCorrectionDescription})</small></p>`;
-    breakdownHTML += `<p style="padding-left: 15px;">Intermediate Capacity = ${formatValue(results.baseCapacity)} A * ${formatFactor(results.tempCorrectionFactor)} = ${formatValue(results.tempCorrectedCapacity)} A</p>`;
+    breakdownHTML += `<p><strong>2. Temp. Factor (k<sub>temp</sub>):</strong> ${formatFactor(results.tempCorrectionFactor)} <small>(${results.tempCorrectionDescription})</small></p>`;
+    // Show intermediate calculation for temp correction
+    breakdownHTML += `<p style="padding-left: 15px;">I<sub>b</sub> * k<sub>temp</sub> = ${formatValue(results.baseCapacity)} A * ${formatFactor(results.tempCorrectionFactor)} = ${formatValue(results.tempCorrectedCapacity)} A</p>`;
 
     // 3. Soil Correction (if applicable)
     let capacityBeforeGrouping = results.tempCorrectedCapacity; // Start with temp corrected
-    if (results.soilCorrectionFactor !== 1) {
-        breakdownHTML += `<p><strong>3. Soil Correction (k<sub>soil</sub>):</strong> ${formatFactor(results.soilCorrectionFactor)} <small>(${results.soilCorrectionDescription})</small></p>`;
-        breakdownHTML += `<p style="padding-left: 15px;">Intermediate Capacity = ${formatValue(results.tempCorrectedCapacity)} A * ${formatFactor(results.soilCorrectionFactor)} = ${formatValue(results.soilCorrectedCapacity)} A</p>`;
+    if (results.soilCorrectionFactor !== 1 && !isNaN(results.soilCorrectionFactor)) {
+        breakdownHTML += `<p><strong>3. Soil Factor (k<sub>soil</sub>):</strong> ${formatFactor(results.soilCorrectionFactor)} <small>(${results.soilCorrectionDescription})</small></p>`;
+        // Show intermediate calculation for soil correction
+        breakdownHTML += `<p style="padding-left: 15px;">(Result from Step 2) * k<sub>soil</sub> = ${formatValue(results.tempCorrectedCapacity)} A * ${formatFactor(results.soilCorrectionFactor)} = ${formatValue(results.soilCorrectedCapacity)} A</p>`;
         capacityBeforeGrouping = results.soilCorrectedCapacity; // Update capacity before grouping
     } else {
-         breakdownHTML += `<p><strong>3. Soil Correction (k<sub>soil</sub>):</strong> 1.000 (N/A)</p>`; // Indicate factor is 1 if not applicable
+         breakdownHTML += `<p><strong>3. Soil Factor (k<sub>soil</sub>):</strong> 1.000 (N/A)</p>`; // Indicate factor is 1 if not applicable
+         // capacityBeforeGrouping remains results.tempCorrectedCapacity
     }
 
-    // 4. Grouping Correction (using final factor)
+    // 4. Grouping Correction
     breakdownHTML += `<p><strong>4. Grouping Factor (k<sub>group</sub>):</strong> ${formatFactor(results.groupReductionFactor)} <small>(${results.groupingTableUsed})</small></p>`;
-    breakdownHTML += `<p style="padding-left: 15px;"><strong>Final Capacity/Cable (I<sub>z</sub>)</strong> = ${formatValue(capacityBeforeGrouping)} A * ${formatFactor(results.groupReductionFactor)} = <strong>${formatValue(results.finalCapacityPerCable)} A</strong></p>`;
+    // Show final calculation for Iz per cable
+    breakdownHTML += `<p style="padding-left: 15px;"><strong>Final Capacity/Cable (I<sub>z</sub>)</strong> = (Result after k<sub>soil</sub>) * k<sub>group</sub></p>`;
+    breakdownHTML += `<p style="padding-left: 15px;"><strong>I<sub>z</sub></strong> = ${formatValue(capacityBeforeGrouping)} A * ${formatFactor(results.groupReductionFactor)} = <strong>${formatValue(results.finalCapacityPerCable)} A</strong></p>`;
 
-    // 5. Verification
-    breakdownHTML += `<p><strong>5. Verification Check:</strong></p>`;
-    breakdownHTML += `<p style="padding-left: 15px;"><small><i>Total Capacity (N * I<sub>z</sub>) ≥ Load Current (I<sub>L</sub>)</i></small></p>`;
+    // 5. Final Verification Check (showing the numbers in the inequality)
+    breakdownHTML += `<p><strong>5. Verification (N * I<sub>z</sub> ≥ I<sub>L</sub> ?):</strong></p>`;
     // Ensure values are numbers before comparing
     const totalCapNum = parseFloat(results.totalCapacity);
     const loadCurrentNum = parseFloat(results.loadCurrent);
     const checkOk = !isNaN(totalCapNum) && !isNaN(loadCurrentNum) && totalCapNum >= loadCurrentNum;
-    const checkSymbol = checkOk ? '≥' : '<';
+    const checkSymbol = checkOk ? '≥' : '<'; // Determine the correct symbol >= or <
     const checkResult = checkOk ? '<span style="color:green; font-weight:bold;">OK</span>' : '<span style="color:red; font-weight:bold;">NOT OK</span>';
-    breakdownHTML += `<p style="padding-left: 15px;">${results.cablesRequired} * ${formatValue(results.finalCapacityPerCable)} A = ${formatValue(results.totalCapacity)} A   ${checkSymbol}   ${formatValue(results.loadCurrent)} A   -> ${checkResult}</p>`;
+    // Display the check with numbers plugged in
+    breakdownHTML += `<p style="padding-left: 15px;">${results.cablesRequired} * ${formatValue(results.finalCapacityPerCable)} A ≥ ${formatValue(results.loadCurrent)} A ?</p>`; // Shows N * Iz >= IL ?
+    breakdownHTML += `<p style="padding-left: 15px;">${formatValue(results.totalCapacity)} A   ${checkSymbol}   ${formatValue(results.loadCurrent)} A   -> ${checkResult}</p>`; // Shows Total Capacity vs Load Current -> OK/NOT OK
 
-
+    // Assign the generated HTML to the breakdown div
     DOMElements.calculationBreakdown.innerHTML = breakdownHTML;
 
+    // --- Display Grouping Iterations ---
+    DOMElements.iterationSteps.innerHTML = results.iterationSteps || ''; // Display iterations *after* main breakdown
 
+    // Make the results section visible
     DOMElements.resultDisplay.style.display = 'block';
 }
 
