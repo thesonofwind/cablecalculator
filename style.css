@@ -1,0 +1,147 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #eef; /* Slightly different background */
+}
+h1, h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+}
+.container {
+    background-color: #fdfdfd; /* Lighter container */
+    border-radius: 8px;
+    padding: 25px; /* Slightly more padding */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Enhanced shadow */
+}
+.form-group {
+    margin-bottom: 18px; /* More spacing */
+}
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #555; /* Darker label color */
+}
+select, input[type="number"] { /* Specific input type */
+    width: 100%;
+    padding: 10px; /* Larger padding */
+    border: 1px solid #ccc; /* Lighter border */
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+select:focus, input[type="number"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+button[type="submit"] { /* Specific button type */
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px; /* Larger button */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    display: inline-block; /* Allows margin auto */
+    margin-top: 10px;
+}
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+.result {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #e8f4fc;
+    border-radius: 4px;
+    border-left: 5px solid #3498db; /* Thicker border */
+}
+.result h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+.tabs {
+    display: flex;
+    margin-bottom: 0; /* Remove bottom margin */
+    border-bottom: 1px solid #ddd; /* Add border below tabs */
+}
+.tab {
+    padding: 12px 25px; /* Larger tabs */
+    cursor: pointer;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    margin-bottom: -1px; /* Overlap border-bottom */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.tab:hover {
+    background-color: #ddd;
+}
+.tab.active {
+    background-color: #fdfdfd; /* Match container background */
+    border-bottom: 1px solid #fdfdfd; /* Hide bottom border */
+    color: #3498db;
+    font-weight: bold;
+}
+.tab-content {
+    display: none;
+    padding-top: 20px; /* Add padding above content */
+}
+.tab-content.active {
+    display: block;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px; /* More padding */
+    text-align: left;
+    vertical-align: top; /* Align top for long text */
+}
+th {
+    background-color: #f2f2f2;
+    font-weight: bold; /* Ensure bold */
+}
+.note {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+    font-style: italic; /* Italicize notes */
+}
+.iteration {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 1px solid #e0e0e0; /* Add light border */
+}
+.iteration strong {
+    color: #333;
+}
+/* Style for error messages */
+.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    border: 1px solid #D8000C;
+    padding: 8px;
+    border-radius: 4px;
+}
+#error-message {
+    color: #D8000C;
+    font-weight: bold;
+}
