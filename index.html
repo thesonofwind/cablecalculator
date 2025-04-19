@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IEC 60364-5-52 Cable Sizing Calculator</title>
     <style>
+        /* ... (keep existing styles) ... */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -110,22 +111,22 @@
 </head>
 <body>
     <h1>IEC 60364-5-52 Cable Sizing Calculator</h1>
-    
+
     <div class="container">
         <div class="tabs">
             <div class="tab active" onclick="switchTab('calculator')">Calculator</div>
             <div class="tab" onclick="switchTab('reference')">Reference Tables</div>
             <div class="tab" onclick="switchTab('methods')">Installation Methods</div>
         </div>
-        
+
         <div id="calculator" class="tab-content active">
             <h2>Cable Calculation</h2>
-            
+
             <div class="form-group">
                 <label for="loadCurrent">Load Current (A):</label>
                 <input type="number" id="loadCurrent" step="0.1" min="0" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="installationMethod">Installation Method:</label>
                 <select id="installationMethod" onchange="updateMethodDetails()">
@@ -142,7 +143,7 @@
                 </select>
                 <div id="methodDescription" class="note"></div>
             </div>
-            
+
             <div class="form-group">
                 <label for="cableType">Cable Type:</label>
                 <select id="cableType">
@@ -154,7 +155,7 @@
                     <option value="Mineral_bare">Mineral insulation, bare not exposed</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="conductorMaterial">Conductor Material:</label>
                 <select id="conductorMaterial">
@@ -162,7 +163,7 @@
                     <option value="aluminium">Aluminium</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="cableSize">Cable Size (mm²):</label>
                 <select id="cableSize">
@@ -184,7 +185,7 @@
                     <option value="300">300</option>
                 </select>
             </div>
-            
+
             <div id="ambientAirGroup" class="form-group">
                 <label for="ambientAirTemp">Ambient Air Temperature (°C):</label>
                 <select id="ambientAirTemp">
@@ -201,7 +202,7 @@
                     <option value="60">60</option>
                 </select>
             </div>
-            
+
             <div id="groundTempGroup" class="form-group" style="display:none;">
                 <label for="groundTemp">Ground Temperature (°C):</label>
                 <select id="groundTemp">
@@ -218,7 +219,7 @@
                     <option value="60">60</option>
                 </select>
             </div>
-            
+
             <div id="soilResistivityGroup" class="form-group" style="display:none;">
                 <label for="soilResistivity">Soil Thermal Resistivity (K·m/W):</label>
                 <select id="soilResistivity">
@@ -231,37 +232,49 @@
                     <option value="3.0">3.0</option>
                 </select>
             </div>
-            
-            <div class="form-group">
-                <label for="cableClearance">Cable Clearance (for methods D1/D2):</label>
-                <select id="cableClearance">
-                    <option value="touching">Touching</option>
-                    <option value="1d">1× cable diameter</option>
-                    <option value="0.125m">0.125 m</option>
-                    <option value="0.25m">0.25 m</option>
-                    <option value="0.5m">0.5 m</option>
-                    <option value="1.0m">1.0 m</option>
+
+            <!-- NEW: Dropdown for D1 (Ducts) -->
+            <div id="ductClearanceGroup" class="form-group" style="display:none;">
+                <label for="ductClearance">Duct Clearance (Method D1 - Table B.52.19):</label>
+                <select id="ductClearance">
+                    <option value="touching">Ducts Touching</option>
+                    <option value="0.25m">0.25 m spacing</option>
+                    <option value="0.5m">0.5 m spacing</option>
+                    <option value="1.0m">1.0 m spacing</option>
                 </select>
             </div>
-            
+
+            <!-- NEW: Dropdown for D2 (Direct Burial) -->
+            <div id="burialClearanceGroup" class="form-group" style="display:none;">
+                <label for="burialClearance">Cable Clearance (Method D2 - Table B.52.18):</label>
+                <select id="burialClearance">
+                    <option value="touching">Cables Touching</option>
+                    <option value="1d">1× cable diameter</option>
+                    <option value="0.125m">0.125 m spacing</option>
+                    <option value="0.25m">0.25 m spacing</option>
+                    <option value="0.5m">0.5 m spacing</option>
+                </select>
+            </div>
+
             <button onclick="calculate()">Calculate</button>
-            
+
             <div id="result" class="result" style="display:none;">
                 <h3>Results</h3>
-                <p><strong>Selected Cable Capacity:</strong> <span id="selectedCapacity"></span> A</p>
+                <p><strong>Selected Cable Capacity (Base):</strong> <span id="selectedCapacity"></span> A</p>
                 <p><strong>After Temperature Correction:</strong> <span id="tempCorrectedCapacity"></span> A</p>
                 <p><strong>After Soil Resistivity Correction (if applicable):</strong> <span id="soilCorrectedCapacity"></span> A</p>
                 <p><strong>Final Grouping Reduction Factor:</strong> <span id="finalGroupFactor"></span></p>
-                <p><strong>Final Cable Capacity After Grouping:</strong> <span id="finalCapacity"></span> A</p>
+                <p><strong>Final Cable Capacity After Grouping (per cable):</strong> <span id="finalCapacity"></span> A</p>
                 <p><strong>Number of Cables Required:</strong> <span id="cablesRequired"></span></p>
                 <p><strong>Total Capacity:</strong> <span id="totalCapacity"></span> A</p>
-                
+
                 <div id="iterationSteps"></div>
             </div>
         </div>
-        
+
         <div id="reference" class="tab-content">
-            <h2>Reference Tables</h2>
+            <!-- ... (keep existing reference tab content) ... -->
+             <h2>Reference Tables</h2>
             <p>Select a table to view:</p>
             <select id="tableSelector" onchange="showSelectedTable()">
                 <option value="B.52.2">B.52.2 - PVC, 2 conductors, 70°C</option>
@@ -271,46 +284,47 @@
                 <option value="B.52.14">B.52.14 - Air temperature correction</option>
                 <option value="B.52.15">B.52.15 - Ground temperature correction</option>
                 <option value="B.52.16">B.52.16 - Soil resistivity correction</option>
-                <option value="B.52.17">B.52.17 - Group reduction factors</option>
-                <option value="B.52.18">B.52.18 - Direct burial reduction factors</option>
-                <option value="B.52.19">B.52.19 - Duct burial reduction factors</option>
+                <option value="B.52.17">B.52.17 - Group reduction factors (General)</option>
+                <option value="B.52.18">B.52.18 - Direct burial reduction factors (D2)</option>
+                <option value="B.52.19">B.52.19 - Duct burial reduction factors (D1)</option>
             </select>
-            
+
             <div id="tableDisplay"></div>
         </div>
-        
+
         <div id="methods" class="tab-content">
+           <!-- ... (keep existing methods tab content) ... -->
             <h2>Installation Methods</h2>
             <p>Detailed descriptions of installation methods referenced in IEC 60364-5-52.</p>
-            
+
             <div id="methodsList">
                 <h3>Method A1</h3>
                 <p>Insulated conductors or single-core cables in conduit in a thermally insulated wall.</p>
-                
+
                 <h3>Method A2</h3>
                 <p>Multi-core cable in conduit in a thermally insulated wall.</p>
-                
+
                 <h3>Method B1</h3>
                 <p>Insulated conductors or single-core cables in conduit on a wooden or masonry wall or spaced less than 0.3× conduit diameter from it.</p>
-                
+
                 <h3>Method B2</h3>
                 <p>Multi-core cable in conduit on a wooden or masonry wall or spaced less than 0.3× conduit diameter from it.</p>
-                
+
                 <h3>Method C</h3>
                 <p>Single-core or multi-core cables fixed on, or spaced less than 0.3× cable diameter from a wooden or masonry wall.</p>
-                
+
                 <h3>Method D1</h3>
                 <p>Multi-core cable in conduit or in cable ducting in the ground.</p>
-                
+
                 <h3>Method D2</h3>
                 <p>Sheathed single-core or multi-core cables direct in the ground (with or without added mechanical protection).</p>
-                
+
                 <h3>Method E</h3>
                 <p>Multi-core cable in free air.</p>
-                
+
                 <h3>Method F</h3>
                 <p>Clearance to wall not less than 0.3 times cable diameter.</p>
-                
+
                 <h3>Method G</h3>
                 <p>Single-core cables, touching in free air.</p>
             </div>
@@ -326,257 +340,164 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             document.getElementById(tabId).classList.add('active');
             document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
         }
-        
-        // Update method description when installation method changes
+
+        // Update method description and relevant input fields when installation method changes
         function updateMethodDetails() {
             const method = document.getElementById('installationMethod').value;
             let description = '';
             let showGroundFields = false;
-            
+            let showD1Clearance = false;
+            let showD2Clearance = false;
+
             switch(method) {
-                case 'A1':
-                    description = 'Insulated conductors or single-core cables in conduit in a thermally insulated wall.';
-                    break;
-                case 'A2':
-                    description = 'Multi-core cable in conduit in a thermally insulated wall.';
-                    break;
-                case 'B1':
-                    description = 'Insulated conductors or single-core cables in conduit on a wooden or masonry wall.';
-                    break;
-                case 'B2':
-                    description = 'Multi-core cable in conduit on a wooden or masonry wall.';
-                    break;
-                case 'C':
-                    description = 'Single-core or multi-core cables fixed on, or spaced less than 0.3× cable diameter from a wooden or masonry wall.';
-                    break;
+                case 'A1': description = 'Insulated conductors or single-core cables in conduit in a thermally insulated wall.'; break;
+                case 'A2': description = 'Multi-core cable in conduit in a thermally insulated wall.'; break;
+                case 'B1': description = 'Insulated conductors or single-core cables in conduit on a wooden or masonry wall.'; break;
+                case 'B2': description = 'Multi-core cable in conduit on a wooden or masonry wall.'; break;
+                case 'C': description = 'Single-core or multi-core cables fixed on, or spaced less than 0.3× cable diameter from a wooden or masonry wall.'; break;
                 case 'D1':
                     description = 'Multi-core cable in conduit or in cable ducting in the ground.';
                     showGroundFields = true;
+                    showD1Clearance = true; // Show D1 clearance options
                     break;
                 case 'D2':
                     description = 'Sheathed single-core or multi-core cables direct in the ground (with or without added mechanical protection).';
                     showGroundFields = true;
+                    showD2Clearance = true; // Show D2 clearance options
                     break;
-                case 'E':
-                    description = 'Multi-core cable in free air.';
-                    break;
-                case 'F':
-                    description = 'Clearance to wall not less than 0.3 times cable diameter.';
-                    break;
-                case 'G':
-                    description = 'Single-core cables, touching in free air.';
-                    break;
+                case 'E': description = 'Multi-core cable in free air.'; break;
+                case 'F': description = 'Clearance to wall not less than 0.3 times cable diameter.'; break;
+                case 'G': description = 'Single-core cables, touching in free air.'; break;
             }
-            
+
             document.getElementById('methodDescription').textContent = description;
-            
+
             // Show/hide ground-related fields
             document.getElementById('ambientAirGroup').style.display = showGroundFields ? 'none' : 'block';
             document.getElementById('groundTempGroup').style.display = showGroundFields ? 'block' : 'none';
             document.getElementById('soilResistivityGroup').style.display = showGroundFields ? 'block' : 'none';
+
+            // Show/hide the correct clearance dropdown
+            document.getElementById('ductClearanceGroup').style.display = showD1Clearance ? 'block' : 'none';
+            document.getElementById('burialClearanceGroup').style.display = showD2Clearance ? 'block' : 'none';
         }
-        
-        // Initialize method description
+
+        // Initialize method description and field visibility
         updateMethodDetails();
-        
+
         // Cable capacity data from IEC 60364-5-52 tables
         const cableData = {
-            // Table B.52.2 - PVC insulation, two loaded conductors, 70°C
-            'PVC_2': {
-                'copper': {
-                    'A1': [14.5, 19.5, 26, 34, 46, 61, 80, 99, 119, 151, 182, 210, 240, 273, 321, 367],
-                    'A2': [14, 18.5, 25, 32, 43, 57, 75, 92, 110, 139, 167, 192, 219, 248, 291, 334],
-                    'B1': [17.5, 24, 32, 41, 57, 76, 101, 125, 151, 192, 232, 269, 300, 341, 400, 458],
-                    'B2': [16.5, 23, 30, 38, 52, 69, 90, 111, 133, 168, 201, 232, 258, 294, 344, 394],
-                    'C': [19.5, 27, 36, 46, 63, 85, 112, 138, 168, 213, 258, 299, 344, 392, 461, 530],
-                    'D1': [22, 29, 37, 46, 60, 78, 99, 119, 140, 173, 204, 231, 261, 292, 336, 379],
-                    'D2': [22, 28, 38, 48, 64, 83, 110, 132, 156, 192, 230, 261, 293, 331, 382, 427]
-                },
-                'aluminium': {
-                    'A1': [null, 15, 20, 26, 36, 48, 63, 77, 93, 118, 142, 164, 189, 215, 252, 289],
-                    'A2': [null, 14.5, 19.5, 25, 33, 44, 58, 71, 86, 108, 130, 150, 172, 195, 229, 263],
-                    'B1': [null, 18.5, 25, 32, 44, 60, 79, 97, 118, 150, 181, 210, 234, 266, 312, 358],
-                    'B2': [null, 17.5, 24, 30, 41, 54, 71, 86, 104, 131, 157, 181, 201, 230, 269, 308],
-                    'C': [null, 21, 28, 36, 49, 66, 83, 103, 125, 160, 195, 226, 261, 298, 352, 406],
-                    'D1': [null, 22, 29, 36, 47, 61, 77, 93, 109, 135, 159, 180, 204, 228, 262, 296],
-                    'D2': [null, null, null, 36, 47, 63, 82, 98, 117, 145, 173, 200, 224, 255, 298, 336]
-                }
-            },
-            // Table B.52.3 - XLPE/EPR insulation, two loaded conductors, 90°C
-            'XLPE_2': {
-                'copper': {
-                    'A1': [19, 26, 35, 45, 61, 81, 106, 131, 158, 200, 241, 278, 318, 362, 424, 486],
-                    'A2': [18.5, 25, 33, 42, 57, 76, 99, 121, 145, 183, 220, 253, 290, 329, 386, 442],
-                    'B1': [23, 31, 42, 54, 75, 100, 133, 164, 198, 253, 306, 354, 393, 449, 528, 603],
-                    'B2': [22, 30, 40, 51, 69, 91, 119, 146, 175, 221, 265, 305, 334, 384, 459, 532],
-                    'C': [24, 33, 45, 58, 80, 107, 138, 171, 209, 269, 328, 382, 441, 506, 599, 693],
-                    'D1': [25, 33, 43, 53, 71, 91, 116, 139, 164, 203, 239, 271, 306, 343, 395, 446],
-                    'D2': [27, 35, 46, 58, 77, 100, 129, 155, 183, 225, 270, 306, 343, 387, 448, 502]
-                },
-                'aluminium': {
-                    'A1': [null, 20, 27, 35, 48, 64, 84, 103, 125, 158, 191, 220, 253, 288, 338, 387],
-                    'A2': [null, 19.5, 26, 33, 45, 60, 78, 96, 115, 145, 175, 201, 230, 262, 307, 352],
-                    'B1': [null, 25, 33, 43, 59, 79, 105, 130, 157, 200, 242, 281, 307, 351, 412, 471],
-                    'B2': [null, 23, 31, 40, 54, 72, 94, 115, 138, 175, 210, 242, 261, 300, 358, 415],
-                    'C': [null, 26, 35, 45, 62, 84, 101, 126, 154, 198, 241, 280, 324, 371, 439, 508],
-                    'D1': [null, 26, 33, 42, 55, 71, 90, 108, 128, 158, 186, 211, 238, 267, 307, 346],
-                    'D2': [null, null, null, 42, 55, 76, 98, 117, 139, 170, 204, 233, 261, 296, 343, 386]
-                }
-            },
-            // Table B.52.4 - PVC insulation, three loaded conductors, 70°C
-            'PVC_3': {
-                'copper': {
-                    'A1': [13.5, 18, 24, 31, 42, 56, 73, 89, 108, 136, 164, 188, 216, 245, 266, 328],
-                    'A2': [13, 17.5, 23, 29, 39, 52, 68, 83, 99, 125, 150, 172, 196, 223, 261, 298],
-                    'B1': [15.5, 21, 28, 36, 50, 68, 89, 110, 134, 171, 207, 239, 262, 296, 346, 394],
-                    'B2': [15, 20, 27, 34, 46, 62, 80, 99, 118, 149, 179, 206, 225, 255, 297, 339],
-                    'C': [17.5, 24, 32, 41, 57, 76, 96, 119, 144, 184, 223, 259, 299, 341, 403, 464],
-                    'D1': [18, 24, 30, 38, 50, 64, 82, 98, 116, 143, 169, 292, 217, 243, 280, 316],
-                    'D2': [19, 24, 33, 41, 54, 70, 92, 110, 130, 162, 193, 220, 246, 278, 320, 359]
-                },
-                'aluminium': {
-                    'A1': [null, 14, 18.5, 24, 32, 43, 57, 70, 84, 107, 129, 149, 170, 194, 227, 261],
-                    'A2': [null, 13.5, 17.5, 23, 31, 41, 53, 65, 78, 98, 118, 135, 155, 176, 207, 237],
-                    'B1': [null, 16.5, 22, 28, 39, 53, 70, 86, 104, 133, 161, 186, 204, 230, 269, 306],
-                    'B2': [null, 15.5, 21, 27, 36, 48, 62, 77, 92, 116, 139, 160, 176, 199, 232, 265],
-                    'C': [null, 18.5, 25, 32, 44, 59, 73, 90, 110, 140, 170, 197, 227, 259, 305, 351],
-                    'D1': [null, 18.5, 24, 30, 39, 50, 64, 77, 91, 112, 132, 150, 169, 190, 218, 247],
-                    'D2': [null, null, null, 30, 39, 53, 69, 83, 99, 122, 148, 169, 189, 214, 250, 282]
-                }
-            },
-            // Table B.52.5 - XLPE/EPR insulation, three loaded conductors, 90°C
-            'XLPE_3': {
-                'copper': {
-                    'A1': [17, 23, 31, 40, 54, 73, 95, 117, 141, 179, 216, 249, 285, 324, 380, 435],
-                    'A2': [16.5, 22, 30, 38, 51, 68, 89, 109, 130, 164, 197, 227, 259, 295, 346, 396],
-                    'B1': [20, 28, 37, 48, 66, 88, 117, 144, 175, 222, 269, 312, 342, 384, 450, 514],
-                    'B2': [19.5, 26, 35, 44, 60, 80, 105, 128, 154, 194, 233, 268, 300, 340, 398, 455],
-                    'C': [22, 30, 40, 52, 71, 96, 119, 147, 179, 229, 278, 322, 371, 424, 500, 576],
-                    'D1': [21, 28, 36, 44, 58, 75, 96, 115, 135, 167, 197, 223, 251, 281, 324, 365],
-                    'D2': [23, 30, 39, 49, 65, 84, 107, 129, 153, 188, 226, 257, 287, 324, 375, 419]
-                },
-                'aluminium': {
-                    'A1': [null, 19, 25, 32, 44, 58, 76, 94, 113, 142, 171, 197, 226, 256, 300, 344],
-                    'A2': [null, 18, 24, 31, 41, 55, 71, 87, 104, 131, 157, 180, 206, 233, 273, 313],
-                    'B1': [null, 22, 29, 38, 52, 71, 93, 116, 140, 179, 217, 251, 267, 300, 351, 402],
-                    'B2': [null, 21, 28, 35, 48, 64, 84, 103, 124, 156, 188, 216, 240, 272, 318, 364],
-                    'C': [null, 24, 32, 41, 57, 76, 90, 112, 136, 174, 211, 245, 283, 323, 382, 440],
-                    'D1': [null, 22, 28, 35, 46, 59, 75, 90, 106, 130, 154, 174, 197, 220, 253, 286],
-                    'D2': [null, null, null, 35, 46, 59, 75, 90, 106, 130, 154, 174, 197, 220, 253, 286]
-                }
-            },
-            // Table B.52.6 - Mineral insulation, PVC covered or bare exposed, 70°C (Method C)
-            'Mineral_PVC': {
-                'copper': {
-                    'C': [23, 31, 40, null, null, null, null, null, null, null, null, null, null, null, null, null]
-                },
-                'aluminium': {
-                    'C': []
-                }
-            },
-            // Table B.52.7 - Mineral insulation, bare not exposed, 105°C (Method C)
-            'Mineral_bare': {
-                'copper': {
-                    'C': [28, 38, 51, null, null, null, null, null, null, null, null, null, null, null, null, null]
-                },
-                'aluminium': {
-                    'C': []
-                }
-            },
-            // Table B.52.10 - PVC insulation, copper, methods E,F,G, 70°C
-            'PVC_EFG': {
-                'copper': {
-                    'E': [22, 30, 40, 51, 70, 94, 119, 148, 180, 232, 282, 328, 379, 434, 514, 593],
-                    'F': [null, null, null, null, null, null, 131, 162, 196, 251, 304, 352, 406, 463, 546, 629],
-                    'G': [null, null, null, null, null, null, 146, 181, 219, 281, 341, 396, 456, 521, 615, 709]
-                }
-            },
-            // Table B.52.12 - XLPE/EPR insulation, copper, methods E,F,G, 90°C
-            'XLPE_EFG': {
-                'copper': {
-                    'E': [26, 36, 49, 63, 86, 115, 149, 185, 225, 289, 352, 410, 473, 542, 641, 741],
-                    'F': [null, null, null, null, null, null, 161, 200, 242, 310, 377, 437, 504, 575, 679, 783],
-                    'G': [null, null, null, null, null, null, 182, 226, 275, 353, 430, 500, 577, 661, 781, 902]
-                }
-            }
-        };
-        
-        // Temperature correction factors
-        const tempCorrectionAir = {
-            'PVC': [1.22, 1.17, 1.12, 1.06, 1.00, 0.94, 0.87, 0.79, 0.71, 0.61, 0.50],
-            'XLPE': [1.15, 1.12, 1.08, 1.04, 1.00, 0.96, 0.91, 0.87, 0.82, 0.76, 0.71],
-            'Mineral_70': [1.26, 1.20, 1.14, 1.07, 1.00, 0.93, 0.85, 0.78, 0.67, 0.57, 0.45],
-            'Mineral_105': [1.14, 1.11, 1.07, 1.04, 1.00, 0.96, 0.92, 0.88, 0.84, 0.80, 0.75]
-        };
-        
-        const tempCorrectionGround = {
-            'PVC': [1.10, 1.05, 1.00, 0.95, 0.89, 0.84, 0.77, 0.71, 0.63, 0.55, 0.45],
-            'XLPE': [1.07, 1.04, 1.00, 0.96, 0.93, 0.89, 0.85, 0.80, 0.76, 0.71, 0.65]
-        };
-        
-        // Soil resistivity correction factors
-        const soilCorrectionDucts = [1.28, 1.20, 1.18, 1.10, 1.05, 1.00, 0.96];
-        const soilCorrectionDirect = [1.88, 1.62, 1.50, 1.28, 1.12, 1.00, 0.90];
-        
-        // Group reduction factors (Table B.52.17)
-        const groupReduction = {
-            '1': 1.00,
-            '2': 0.80,
-            '3': 0.70,
-            '4': 0.65,
-            '5': 0.60,
-            '6': 0.57,
-            '7': 0.54,
-            '8': 0.52,
-            '9': 0.50,
-            '12': 0.45,
-            '16': 0.41,
-            '20': 0.38
-        };
-        
-        // Direct burial reduction factors (Table B.52.18)
-        const burialReduction = {
-            'touching': [0.75, 0.65, 0.60, 0.55, 0.50, 0.45, 0.43, 0.41, 0.36, 0.32, 0.29],
-            '1d': [0.80, 0.70, 0.60, 0.55, 0.55, 0.51, 0.48, 0.46, 0.42, 0.38, 0.35],
-            '0.125m': [0.85, 0.75, 0.70, 0.65, 0.60, 0.59, 0.57, 0.55, 0.51, 0.47, 0.44],
-            '0.25m': [0.90, 0.80, 0.75, 0.70, 0.70, 0.67, 0.65, 0.63, 0.59, 0.56, 0.53],
-            '0.5m': [0.90, 0.85, 0.80, 0.80, 0.80, 0.76, 0.75, 0.74, 0.71, 0.38, 0.66]
-        };
-        
-        // Duct burial reduction factors (Table B.52.19)
-        const ductReduction = {
-            'touching': [0.85, 0.75, 0.70, 0.65, 0.60, 0.57, 0.54, 0.52, 0.49, 0.47, 0.45],
-            '0.25m': [0.90, 0.85, 0.80, 0.80, 0.80, 0.76, 0.74, 0.73, 0.72, 0.70, 0.69],
-            '0.5m': [0.95, 0.90, 0.85, 0.85, 0.80, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74],
-            '1.0m': [0.95, 0.95, 0.90, 0.90, 0.90, 0.88, 0.88, 0.87, 0.86, 0.86, 0.85]
+            // ... (keep existing cableData object) ...
+            'PVC_2': { 'copper': { 'A1': [14.5, 19.5, 26, 34, 46, 61, 80, 99, 119, 151, 182, 210, 240, 273, 321, 367], 'A2': [14, 18.5, 25, 32, 43, 57, 75, 92, 110, 139, 167, 192, 219, 248, 291, 334], 'B1': [17.5, 24, 32, 41, 57, 76, 101, 125, 151, 192, 232, 269, 300, 341, 400, 458], 'B2': [16.5, 23, 30, 38, 52, 69, 90, 111, 133, 168, 201, 232, 258, 294, 344, 394], 'C': [19.5, 27, 36, 46, 63, 85, 112, 138, 168, 213, 258, 299, 344, 392, 461, 530], 'D1': [22, 29, 37, 46, 60, 78, 99, 119, 140, 173, 204, 231, 261, 292, 336, 379], 'D2': [22, 28, 38, 48, 64, 83, 110, 132, 156, 192, 230, 261, 293, 331, 382, 427] }, 'aluminium': { 'A1': [null, 15, 20, 26, 36, 48, 63, 77, 93, 118, 142, 164, 189, 215, 252, 289], 'A2': [null, 14.5, 19.5, 25, 33, 44, 58, 71, 86, 108, 130, 150, 172, 195, 229, 263], 'B1': [null, 18.5, 25, 32, 44, 60, 79, 97, 118, 150, 181, 210, 234, 266, 312, 358], 'B2': [null, 17.5, 24, 30, 41, 54, 71, 86, 104, 131, 157, 181, 201, 230, 269, 308], 'C': [null, 21, 28, 36, 49, 66, 83, 103, 125, 160, 195, 226, 261, 298, 352, 406], 'D1': [null, 22, 29, 36, 47, 61, 77, 93, 109, 135, 159, 180, 204, 228, 262, 296], 'D2': [null, null, null, 36, 47, 63, 82, 98, 117, 145, 173, 200, 224, 255, 298, 336] } },
+            'XLPE_2': { 'copper': { 'A1': [19, 26, 35, 45, 61, 81, 106, 131, 158, 200, 241, 278, 318, 362, 424, 486], 'A2': [18.5, 25, 33, 42, 57, 76, 99, 121, 145, 183, 220, 253, 290, 329, 386, 442], 'B1': [23, 31, 42, 54, 75, 100, 133, 164, 198, 253, 306, 354, 393, 449, 528, 603], 'B2': [22, 30, 40, 51, 69, 91, 119, 146, 175, 221, 265, 305, 334, 384, 459, 532], 'C': [24, 33, 45, 58, 80, 107, 138, 171, 209, 269, 328, 382, 441, 506, 599, 693], 'D1': [25, 33, 43, 53, 71, 91, 116, 139, 164, 203, 239, 271, 306, 343, 395, 446], 'D2': [27, 35, 46, 58, 77, 100, 129, 155, 183, 225, 270, 306, 343, 387, 448, 502] }, 'aluminium': { 'A1': [null, 20, 27, 35, 48, 64, 84, 103, 125, 158, 191, 220, 253, 288, 338, 387], 'A2': [null, 19.5, 26, 33, 45, 60, 78, 96, 115, 145, 175, 201, 230, 262, 307, 352], 'B1': [null, 25, 33, 43, 59, 79, 105, 130, 157, 200, 242, 281, 307, 351, 412, 471], 'B2': [null, 23, 31, 40, 54, 72, 94, 115, 138, 175, 210, 242, 261, 300, 358, 415], 'C': [null, 26, 35, 45, 62, 84, 101, 126, 154, 198, 241, 280, 324, 371, 439, 508], 'D1': [null, 26, 33, 42, 55, 71, 90, 108, 128, 158, 186, 211, 238, 267, 307, 346], 'D2': [null, null, null, 42, 55, 76, 98, 117, 139, 170, 204, 233, 261, 296, 343, 386] } },
+            'PVC_3': { 'copper': { 'A1': [13.5, 18, 24, 31, 42, 56, 73, 89, 108, 136, 164, 188, 216, 245, 266, 328], 'A2': [13, 17.5, 23, 29, 39, 52, 68, 83, 99, 125, 150, 172, 196, 223, 261, 298], 'B1': [15.5, 21, 28, 36, 50, 68, 89, 110, 134, 171, 207, 239, 262, 296, 346, 394], 'B2': [15, 20, 27, 34, 46, 62, 80, 99, 118, 149, 179, 206, 225, 255, 297, 339], 'C': [17.5, 24, 32, 41, 57, 76, 96, 119, 144, 184, 223, 259, 299, 341, 403, 464], 'D1': [18, 24, 30, 38, 50, 64, 82, 98, 116, 143, 169, 292, 217, 243, 280, 316], 'D2': [19, 24, 33, 41, 54, 70, 92, 110, 130, 162, 193, 220, 246, 278, 320, 359] }, 'aluminium': { 'A1': [null, 14, 18.5, 24, 32, 43, 57, 70, 84, 107, 129, 149, 170, 194, 227, 261], 'A2': [null, 13.5, 17.5, 23, 31, 41, 53, 65, 78, 98, 118, 135, 155, 176, 207, 237], 'B1': [null, 16.5, 22, 28, 39, 53, 70, 86, 104, 133, 161, 186, 204, 230, 269, 306], 'B2': [null, 15.5, 21, 27, 36, 48, 62, 77, 92, 116, 139, 160, 176, 199, 232, 265], 'C': [null, 18.5, 25, 32, 44, 59, 73, 90, 110, 140, 170, 197, 227, 259, 305, 351], 'D1': [null, 18.5, 24, 30, 39, 50, 64, 77, 91, 112, 132, 150, 169, 190, 218, 247], 'D2': [null, null, null, 30, 39, 53, 69, 83, 99, 122, 148, 169, 189, 214, 250, 282] } },
+            'XLPE_3': { 'copper': { 'A1': [17, 23, 31, 40, 54, 73, 95, 117, 141, 179, 216, 249, 285, 324, 380, 435], 'A2': [16.5, 22, 30, 38, 51, 68, 89, 109, 130, 164, 197, 227, 259, 295, 346, 396], 'B1': [20, 28, 37, 48, 66, 88, 117, 144, 175, 222, 269, 312, 342, 384, 450, 514], 'B2': [19.5, 26, 35, 44, 60, 80, 105, 128, 154, 194, 233, 268, 300, 340, 398, 455], 'C': [22, 30, 40, 52, 71, 96, 119, 147, 179, 229, 278, 322, 371, 424, 500, 576], 'D1': [21, 28, 36, 44, 58, 75, 96, 115, 135, 167, 197, 223, 251, 281, 324, 365], 'D2': [23, 30, 39, 49, 65, 84, 107, 129, 153, 188, 226, 257, 287, 324, 375, 419] }, 'aluminium': { 'A1': [null, 19, 25, 32, 44, 58, 76, 94, 113, 142, 171, 197, 226, 256, 300, 344], 'A2': [null, 18, 24, 31, 41, 55, 71, 87, 104, 131, 157, 180, 206, 233, 273, 313], 'B1': [null, 22, 29, 38, 52, 71, 93, 116, 140, 179, 217, 251, 267, 300, 351, 402], 'B2': [null, 21, 28, 35, 48, 64, 84, 103, 124, 156, 188, 216, 240, 272, 318, 364], 'C': [null, 24, 32, 41, 57, 76, 90, 112, 136, 174, 211, 245, 283, 323, 382, 440], 'D1': [null, 22, 28, 35, 46, 59, 75, 90, 106, 130, 154, 174, 197, 220, 253, 286], 'D2': [null, null, null, 35, 46, 59, 75, 90, 106, 130, 154, 174, 197, 220, 253, 286] } },
+            'Mineral_PVC': { 'copper': { 'C': [23, 31, 40, null, null, null, null, null, null, null, null, null, null, null, null, null] }, 'aluminium': { 'C': [] } },
+            'Mineral_bare': { 'copper': { 'C': [28, 38, 51, null, null, null, null, null, null, null, null, null, null, null, null, null] }, 'aluminium': { 'C': [] } },
+            'PVC_EFG': { 'copper': { 'E': [22, 30, 40, 51, 70, 94, 119, 148, 180, 232, 282, 328, 379, 434, 514, 593], 'F': [null, null, null, null, null, null, 131, 162, 196, 251, 304, 352, 406, 463, 546, 629], 'G': [null, null, null, null, null, null, 146, 181, 219, 281, 341, 396, 456, 521, 615, 709] } },
+            'XLPE_EFG': { 'copper': { 'E': [26, 36, 49, 63, 86, 115, 149, 185, 225, 289, 352, 410, 473, 542, 641, 741], 'F': [null, null, null, null, null, null, 161, 200, 242, 310, 377, 437, 504, 575, 679, 783], 'G': [null, null, null, null, null, null, 182, 226, 275, 353, 430, 500, 577, 661, 781, 902] } }
         };
 
-    function interpolateGroupingFactor(table, clearance, groupCount) {
-    const knownGroups = [2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 20];
-    const factors = table[clearance];
-    
-    for (let i = 0; i < knownGroups.length - 1; i++) {
-        const lower = knownGroups[i];
-        const upper = knownGroups[i + 1];
-        
-        if (groupCount === lower) return factors[i];
-        if (groupCount === upper) return factors[i + 1];
-        
-        if (groupCount > lower && groupCount < upper) {
-            // Linear interpolation
-            const interpolated = factors[i] + 
-                (factors[i + 1] - factors[i]) * ((groupCount - lower) / (upper - lower));
-            return interpolated;
+        // Temperature correction factors
+        const tempCorrectionAir = { /* ... keep existing ... */ 'PVC': [1.22, 1.17, 1.12, 1.06, 1.00, 0.94, 0.87, 0.79, 0.71, 0.61, 0.50], 'XLPE': [1.15, 1.12, 1.08, 1.04, 1.00, 0.96, 0.91, 0.87, 0.82, 0.76, 0.71], 'Mineral_70': [1.26, 1.20, 1.14, 1.07, 1.00, 0.93, 0.85, 0.78, 0.67, 0.57, 0.45], 'Mineral_105': [1.14, 1.11, 1.07, 1.04, 1.00, 0.96, 0.92, 0.88, 0.84, 0.80, 0.75] };
+        const tempCorrectionGround = { /* ... keep existing ... */ 'PVC': [1.10, 1.05, 1.00, 0.95, 0.89, 0.84, 0.77, 0.71, 0.63, 0.55, 0.45], 'XLPE': [1.07, 1.04, 1.00, 0.96, 0.93, 0.89, 0.85, 0.80, 0.76, 0.71, 0.65] };
+
+        // Soil resistivity correction factors
+        const soilCorrectionDucts = [1.28, 1.20, 1.18, 1.10, 1.05, 1.00, 0.96]; // B.52.16 Col 2
+        const soilCorrectionDirect = [1.88, 1.62, 1.50, 1.28, 1.12, 1.00, 0.90]; // B.52.16 Col 3
+
+        // Group reduction factors (Table B.52.17 - General)
+        const groupReduction = { /* ... keep existing ... */ '1': 1.00, '2': 0.80, '3': 0.70, '4': 0.65, '5': 0.60, '6': 0.57, '7': 0.54, '8': 0.52, '9': 0.50, '12': 0.45, '16': 0.41, '20': 0.38 };
+
+        // Direct burial reduction factors (Table B.52.18 - Method D2)
+        // Keys are clearance types, values are arrays corresponding to [2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 20] circuits
+        const burialReduction = {
+            'touching': [0.75, 0.65, 0.60, 0.55, 0.50, 0.45, 0.43, 0.41, 0.36, 0.32, 0.29],
+            '1d':       [0.80, 0.70, 0.60, 0.55, 0.55, 0.51, 0.48, 0.46, 0.42, 0.38, 0.35],
+            '0.125m':   [0.85, 0.75, 0.70, 0.65, 0.60, 0.59, 0.57, 0.55, 0.51, 0.47, 0.44],
+            '0.25m':    [0.90, 0.80, 0.75, 0.70, 0.70, 0.67, 0.65, 0.63, 0.59, 0.56, 0.53],
+            '0.5m':     [0.90, 0.85, 0.80, 0.80, 0.80, 0.76, 0.75, 0.74, 0.71, 0.68, 0.66] // Corrected last two values from B.52.18
+        };
+
+        // Duct burial reduction factors (Table B.52.19 - Method D1)
+        // Keys are clearance types, values are arrays corresponding to [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] cables/ducts
+        const ductReduction = {
+            'touching': [0.85, 0.75, 0.70, 0.65, 0.60, 0.57, 0.54, 0.52, 0.49, 0.47, 0.45],
+            '0.25m':    [0.90, 0.85, 0.80, 0.80, 0.80, 0.76, 0.74, 0.73, 0.72, 0.70, 0.69],
+            '0.5m':     [0.95, 0.90, 0.85, 0.85, 0.80, 0.80, 0.78, 0.77, 0.76, 0.75, 0.74],
+            '1.0m':     [0.95, 0.95, 0.90, 0.90, 0.90, 0.88, 0.88, 0.87, 0.86, 0.86, 0.85]
+        };
+
+        // Helper function for Table B.52.18 interpolation (Direct Burial - D2)
+        function interpolateGroupingFactorD2(clearance, groupCount) {
+            const knownGroups = [2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 20]; // x-axis
+            const factors = burialReduction[clearance]; // y-values for the selected clearance
+
+            if (!factors) return 1.0; // Should not happen if UI is correct
+            if (groupCount <= 1) return 1.0;
+            if (groupCount >= knownGroups[knownGroups.length - 1]) return factors[factors.length - 1]; // Use last factor for groups >= 20
+
+            for (let i = 0; i < knownGroups.length - 1; i++) {
+                const lowerCount = knownGroups[i];
+                const upperCount = knownGroups[i + 1];
+                const lowerFactor = factors[i];
+                const upperFactor = factors[i + 1];
+
+                if (groupCount === lowerCount) return lowerFactor;
+                if (groupCount === upperCount) return upperFactor;
+
+                if (groupCount > lowerCount && groupCount < upperCount) {
+                    // Linear interpolation
+                    const interpolated = lowerFactor +
+                        (upperFactor - lowerFactor) * ((groupCount - lowerCount) / (upperCount - lowerCount));
+                    return interpolated;
+                }
+            }
+            // Fallback (should be covered by >= check above)
+            return factors[factors.length - 1];
         }
-    }
-    
-    // Fallback if out of range
-    return groupCount < knownGroups[0] ? factors[0] : factors[factors.length - 1];
-}
+
+        // Helper function for Table B.52.19 lookup (Duct Burial - D1)
+        function getGroupingFactorD1(clearance, groupCount) {
+            const knownGroups = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; // Number of cables/ducts in the table
+            const factors = ductReduction[clearance];
+
+            if (!factors) return 1.0; // Should not happen
+            if (groupCount <= 1) return 1.0;
+
+            // Find the index corresponding to the group count
+            const index = knownGroups.indexOf(groupCount);
+
+            if (index !== -1) {
+                // Exact match found in the table
+                return factors[index];
+            } else {
+                // If groupCount is larger than the max in the table (12), use the last factor
+                if (groupCount > knownGroups[knownGroups.length - 1]) {
+                    return factors[factors.length - 1];
+                }
+                // If groupCount is between known values (e.g., 2.5 - not really possible here)
+                // For simplicity, we'll use the factor for the next lower group count in the table
+                // (IEC 60364 doesn't specify interpolation for this table)
+                let applicableFactor = 1.0;
+                for(let i = 0; i < knownGroups.length; i++) {
+                    if(groupCount > knownGroups[i]) {
+                         applicableFactor = factors[i];
+                    } else {
+                        break; // Stop when groupCount is no longer greater
+                    }
+                }
+                return applicableFactor;
+
+                // Alternative: Stricter approach - return error or use worst case (last factor)
+                // return factors[factors.length - 1];
+            }
+        }
+
 
         // Calculate button handler
         function calculate() {
@@ -589,447 +510,288 @@
             const ambientAirTemp = document.getElementById('ambientAirTemp').value;
             const groundTemp = document.getElementById('groundTemp').value;
             const soilResistivity = document.getElementById('soilResistivity').value;
-            const cableClearance = document.getElementById('cableClearance').value;
-            
-            if (isNaN(loadCurrent)) {
-                alert('Please enter a valid load current');
+
+            // Get specific clearance values depending on method D1 or D2
+            let ductClearance = null;
+            let burialClearance = null;
+            if (method === 'D1') {
+                ductClearance = document.getElementById('ductClearance').value;
+            } else if (method === 'D2') {
+                burialClearance = document.getElementById('burialClearance').value;
+            }
+
+            if (isNaN(loadCurrent) || loadCurrent <= 0) {
+                alert('Please enter a valid positive load current');
+                document.getElementById('result').style.display = 'none';
                 return;
             }
-            
+
             // Get base capacity from tables
             const sizes = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300];
             const sizeIndex = sizes.indexOf(cableSize);
-            
+
+            if (sizeIndex === -1) {
+                 alert('Invalid cable size selected.');
+                 document.getElementById('result').style.display = 'none';
+                 return;
+            }
+
             let baseCapacity;
-            
+            let currentTableSource = cableType; // Base table assumption
+
             // Special handling for mineral cables
             if (cableType === 'Mineral_PVC' || cableType === 'Mineral_bare') {
                 if (method !== 'C') {
-                    alert('Mineral insulated cables are only defined for Method C in this calculator');
+                    alert('Mineral insulated cables are only defined for Method C in this simplified calculator');
+                    document.getElementById('result').style.display = 'none';
                     return;
                 }
                 if (sizeIndex > 2) { // Only up to 4mm² in our simplified data
                     alert('Mineral insulated cable sizes above 4mm² not implemented in this simplified calculator');
+                     document.getElementById('result').style.display = 'none';
                     return;
                 }
+                 baseCapacity = cableData[cableType][conductor][method][sizeIndex];
             }
-            
             // Special handling for methods E,F,G with PVC/XLPE
-            if ((method === 'E' || method === 'F' || method === 'G') && 
+            else if ((method === 'E' || method === 'F' || method === 'G') &&
                 (cableType === 'PVC_2' || cableType === 'PVC_3' || cableType === 'XLPE_2' || cableType === 'XLPE_3')) {
-                // Use the E,F,G specific tables
-                const efTable = cableType.startsWith('PVC') ? 'PVC_EFG' : 'XLPE_EFG';
-                baseCapacity = cableData[efTable][conductor][method][sizeIndex];
+                 // Determine correct EFG table based on PVC/XLPE
+                 currentTableSource = cableType.startsWith('PVC') ? 'PVC_EFG' : 'XLPE_EFG';
+                 if (!cableData[currentTableSource] || !cableData[currentTableSource][conductor] || !cableData[currentTableSource][conductor][method]) {
+                      alert(`Data not available for ${cableType}, ${conductor}, Method ${method}. Check EFG tables.`);
+                      document.getElementById('result').style.display = 'none';
+                      return;
+                 }
+                baseCapacity = cableData[currentTableSource][conductor][method][sizeIndex];
             } else {
-                // Use standard tables
+                // Use standard tables A1-D2
+                 if (!cableData[cableType] || !cableData[cableType][conductor] || !cableData[cableType][conductor][method]) {
+                      alert(`Data not available for ${cableType}, ${conductor}, Method ${method}. Check standard tables.`);
+                      document.getElementById('result').style.display = 'none';
+                      return;
+                 }
                 baseCapacity = cableData[cableType][conductor][method][sizeIndex];
             }
-            
-            if (baseCapacity === null || baseCapacity === undefined) {
-                alert('Selected combination not available in the standard');
+
+            if (baseCapacity === null || baseCapacity === undefined || isNaN(baseCapacity)) {
+                alert(`Selected combination (${cableType}, ${conductor}, ${method}, ${cableSize}mm²) not available or invalid in the standard data used.`);
+                document.getElementById('result').style.display = 'none';
                 return;
             }
-            
+
             // Apply temperature correction
             let tempCorrectedCapacity = baseCapacity;
             let tempCorrectionFactor = 1;
-            
+            let tempCorrectionType = '';
+
             if (method === 'D1' || method === 'D2') {
-                // Ground temperature correction
+                // Ground temperature correction (Table B.52.15)
                 const tempIndex = ['10','15','20','25','30','35','40','45','50','55','60'].indexOf(groundTemp);
-                const insulation = cableType.startsWith('XLPE') ? 'XLPE' : 'PVC';
-                tempCorrectionFactor = tempCorrectionGround[insulation][tempIndex];
-            } else {
-                // Air temperature correction
-                const tempIndex = ['10','15','20','25','30','35','40','45','50','55','60'].indexOf(ambientAirTemp);
-                
-                if (cableType === 'Mineral_PVC') {
-                    tempCorrectionFactor = tempCorrectionAir['Mineral_70'][tempIndex];
-                } else if (cableType === 'Mineral_bare') {
-                    tempCorrectionFactor = tempCorrectionAir['Mineral_105'][tempIndex];
+                const insulation = cableType.startsWith('XLPE') ? 'XLPE' : 'PVC'; // Assume PVC for mineral 70C
+                if (tempIndex !== -1 && tempCorrectionGround[insulation]) {
+                   tempCorrectionFactor = tempCorrectionGround[insulation][tempIndex];
+                   tempCorrectionType = `Ground ${groundTemp}°C (Ref 20°C)`;
                 } else {
-                    const insulation = cableType.startsWith('XLPE') ? 'XLPE' : 'PVC';
-                    tempCorrectionFactor = tempCorrectionAir[insulation][tempIndex];
+                    console.warn("Could not find ground temp correction factor for:", insulation, groundTemp);
                 }
+            } else {
+                // Air temperature correction (Table B.52.14)
+                const tempIndex = ['10','15','20','25','30','35','40','45','50','55','60'].indexOf(ambientAirTemp);
+                let insulationTypeForTemp;
+
+                if (cableType === 'Mineral_PVC') {
+                    insulationTypeForTemp = 'Mineral_70';
+                } else if (cableType === 'Mineral_bare') {
+                    insulationTypeForTemp = 'Mineral_105';
+                } else {
+                    insulationTypeForTemp = cableType.startsWith('XLPE') ? 'XLPE' : 'PVC';
+                }
+
+                 if (tempIndex !== -1 && tempCorrectionAir[insulationTypeForTemp]) {
+                    tempCorrectionFactor = tempCorrectionAir[insulationTypeForTemp][tempIndex];
+                    tempCorrectionType = `Air ${ambientAirTemp}°C (Ref 30°C)`;
+                 } else {
+                     console.warn("Could not find air temp correction factor for:", insulationTypeForTemp, ambientAirTemp);
+                 }
             }
-            
             tempCorrectedCapacity = baseCapacity * tempCorrectionFactor;
-            
+
             // Apply soil resistivity correction for buried cables
             let soilCorrectedCapacity = tempCorrectedCapacity;
             let soilCorrectionFactor = 1;
-            
+            let soilCorrectionType = 'N/A';
+
             if (method === 'D1' || method === 'D2') {
                 const resIndex = ['0.5','0.7','1.0','1.5','2.0','2.5','3.0'].indexOf(soilResistivity);
-                soilCorrectionFactor = method === 'D1' ? soilCorrectionDucts[resIndex] : soilCorrectionDirect[resIndex];
+                 if (resIndex !== -1) {
+                    soilCorrectionFactor = method === 'D1' ? soilCorrectionDucts[resIndex] : soilCorrectionDirect[resIndex];
+                    soilCorrectionType = `Soil ${soilResistivity} K·m/W (Ref 2.5)`;
+                 } else {
+                      console.warn("Could not find soil resistivity correction factor for:", soilResistivity);
+                 }
                 soilCorrectedCapacity = tempCorrectedCapacity * soilCorrectionFactor;
             }
-            
+
             // Iterative calculation for grouping
-            let iterationSteps = '';
+            let iterationSteps = '<h4>Grouping Calculation Steps:</h4>';
             let cablesRequired = 1;
-            let finalCapacity = soilCorrectedCapacity;
+            let finalCapacityPerCable = soilCorrectedCapacity; // Start with corrected capacity before grouping
             let groupReductionFactor = 1;
+            let groupingTableUsed = 'N/A';
             let previousCables = 0;
             let iterations = 0;
-            const maxIterations = 10;
-            
-            // Start with 1 cable and iterate until stable
-            do {
-                previousCables = cablesRequired;
-                
-                // Get grouping reduction factor based on current number of cables
-                if (method === 'D1') {
-                    // Duct burial grouping
-                    const clearanceMap = {
-                        'touching': 'touching',
-                        '1d': 'touching',
-                        '0.125m': '0.25m',
-                        '0.25m': '0.25m',
-                        '0.5m': '0.5m',
-                        '1.0m': '1.0m'
-                    };
-                    const clearance = clearanceMap[cableClearance];
-                    
-                    // Find the appropriate reduction factor based on number of cables
-                    if (cablesRequired <= 6) {
-                        groupReductionFactor = ductReduction[clearance][0];
-                    } else if (cablesRequired <= 12) {
-                        groupReductionFactor = ductReduction[clearance][5];
-                    } else {
-                        groupReductionFactor = ductReduction[clearance][10];
-                    }
-                } else if (method === 'D2') {
-                    // Direct burial grouping
-                    let clearance;
-                    if (cableClearance === 'touching') clearance = 'touching';
-                    else if (cableClearance === '1d') clearance = '1d';
-                    else if (cableClearance === '0.125m') clearance = '0.125m';
-                    else if (cableClearance === '0.25m') clearance = '0.25m';
-                    else clearance = '0.5m';
-                    
-                    groupReductionFactor = interpolateGroupingFactor(burialReduction, clearance, cablesRequired);
+            const maxIterations = 10; // Safety break
 
-                } else {
-                    // Standard grouping (Table B.52.17)
-                    // Find the closest standard grouping value
-                    const standardGroups = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 20];
-                    let closestGroup = 1;
-                    
-                    for (let i = 0; i < standardGroups.length; i++) {
-                        if (cablesRequired <= standardGroups[i]) {
-                            closestGroup = standardGroups[i];
-                            break;
+            // Calculate initial requirement based on corrected capacity *before* grouping
+            cablesRequired = Math.ceil(loadCurrent / soilCorrectedCapacity);
+            if (cablesRequired <= 0) cablesRequired = 1; // Must have at least one cable
+
+            // Only iterate if more than 1 cable is initially needed
+            if (cablesRequired > 1) {
+                do {
+                    previousCables = cablesRequired; // Store cables needed from previous iteration
+
+                    // Get grouping reduction factor based on *current estimate* of cables required
+                    if (method === 'D1') {
+                        // Duct burial grouping (Table B.52.19)
+                        groupReductionFactor = getGroupingFactorD1(ductClearance, previousCables);
+                        groupingTableUsed = `B.52.19 (Ducts, ${ductClearance})`;
+                    } else if (method === 'D2') {
+                        // Direct burial grouping (Table B.52.18)
+                        groupReductionFactor = interpolateGroupingFactorD2(burialClearance, previousCables);
+                         groupingTableUsed = `B.52.18 (Direct, ${burialClearance})`;
+                    } else {
+                        // Standard grouping (Table B.52.17) for other methods if > 1 cable
+                        const standardGroups = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 20];
+                        let closestGroup = 1;
+                        for (let i = 0; i < standardGroups.length; i++) {
+                             if (previousCables <= standardGroups[i]) {
+                                closestGroup = standardGroups[i];
+                                break;
+                             }
+                             if (i === standardGroups.length - 1) { // If > last entry (20)
+                                closestGroup = standardGroups[i];
+                             }
                         }
-                        if (i === standardGroups.length - 1) {
-                            closestGroup = standardGroups[i];
-                        }
+                        groupReductionFactor = groupReduction[closestGroup.toString()] || groupReduction['20']; // Use last factor if somehow > 20
+                        groupingTableUsed = `B.52.17 (General)`;
                     }
-                    
-                    groupReductionFactor = groupReduction[closestGroup.toString()];
-                }
-                
-                // Calculate new capacity with grouping
-                finalCapacity = soilCorrectedCapacity * groupReductionFactor;
-                
-                // Calculate new number of cables required
-                cablesRequired = Math.ceil(loadCurrent / finalCapacity);
-                
-                // Record iteration step
-                iterationSteps += `
-                    <div class="iteration">
-                        <strong>Iteration ${iterations + 1}:</strong><br>
-                        - Cables in group: ${previousCables}<br>
-                        - Group reduction factor: ${groupReductionFactor.toFixed(3)}<br>
-                        - Capacity per cable: ${finalCapacity.toFixed(1)} A<br>
-                        - Calculated cables required: ${cablesRequired}<br>
-                    </div>
-                `;
-                
-                iterations++;
-                
-                // Prevent infinite loops
-                if (iterations >= maxIterations) {
-                    iterationSteps += `<div class="iteration"><strong>Maximum iterations reached (${maxIterations})</strong></div>`;
-                    break;
-                }
-                
-            } while (cablesRequired !== previousCables);
-            
-            const totalCapacity = cablesRequired * finalCapacity;
-            
+
+                    // Calculate new capacity per cable *with* grouping factor
+                    finalCapacityPerCable = soilCorrectedCapacity * groupReductionFactor;
+
+                    // Calculate new estimate of cables required based on the de-rated capacity
+                    if (finalCapacityPerCable <= 0) {
+                         iterationSteps += `<div class="iteration error">Error: Capacity per cable became zero or negative. Check inputs/factors.</div>`;
+                         cablesRequired = Infinity; // Force loop break
+                    } else {
+                         cablesRequired = Math.ceil(loadCurrent / finalCapacityPerCable);
+                         if (cablesRequired <=0) cablesRequired = 1; // Ensure at least 1
+                    }
+
+
+                    // Record iteration step
+                    iterationSteps += `
+                        <div class="iteration">
+                            <strong>Iteration ${iterations + 1}:</strong><br>
+                            - Assuming ${previousCables} cable(s) in group.<br>
+                            - Grouping Factor (${groupingTableUsed}): ${groupReductionFactor.toFixed(3)}<br>
+                            - Resulting Capacity per Cable: ${finalCapacityPerCable.toFixed(1)} A<br>
+                            - Cables needed for ${loadCurrent} A: ${loadCurrent.toFixed(1)} / ${finalCapacityPerCable.toFixed(1)} = ${cablesRequired}<br>
+                        </div>
+                    `;
+
+                    iterations++;
+
+                    // Prevent infinite loops
+                    if (iterations >= maxIterations) {
+                        iterationSteps += `<div class="iteration"><strong>Warning: Maximum iterations reached (${maxIterations}). Result may be unstable.</strong></div>`;
+                        break;
+                    }
+                     // Check for non-convergence (oscillating) - less common here but possible
+                     if (iterations > 2 && cablesRequired !== previousCables && cablesRequired === parseInt(iterationSteps.match(/Assuming (\d+) cable/g).slice(-2)[0].match(/\d+/)[0]) ) {
+                         iterationSteps += `<div class="iteration"><strong>Warning: Calculation might be oscillating. Using last calculated value (${cablesRequired}).</strong></div>`;
+                         break;
+                     }
+
+
+                } while (cablesRequired !== previousCables && cablesRequired !== Infinity);
+            } else {
+                 // Only 1 cable needed - no grouping factor applied
+                 finalCapacityPerCable = soilCorrectedCapacity; // Final capacity is just the corrected capacity
+                 groupReductionFactor = 1.0;
+                 groupingTableUsed = 'N/A (1 cable)';
+                 iterationSteps += `<div class="iteration">Only 1 cable required based on corrected capacity (${soilCorrectedCapacity.toFixed(1)} A). No grouping reduction applied.</div>`;
+            }
+
+            const totalCapacity = cablesRequired * finalCapacityPerCable;
+
             // Display results
             document.getElementById('selectedCapacity').textContent = baseCapacity.toFixed(1);
-            document.getElementById('tempCorrectedCapacity').textContent = tempCorrectedCapacity.toFixed(1) + 
-                ' (factor: ' + tempCorrectionFactor.toFixed(2) + ')';
-            
+            document.getElementById('tempCorrectedCapacity').textContent = `${tempCorrectedCapacity.toFixed(1)} (Factor: ${tempCorrectionFactor.toFixed(2)}, ${tempCorrectionType})`;
+
             if (method === 'D1' || method === 'D2') {
-                document.getElementById('soilCorrectedCapacity').textContent = soilCorrectedCapacity.toFixed(1) + 
-                    ' (factor: ' + soilCorrectionFactor.toFixed(2) + ')';
+                document.getElementById('soilCorrectedCapacity').textContent = `${soilCorrectedCapacity.toFixed(1)} (Factor: ${soilCorrectionFactor.toFixed(2)}, ${soilCorrectionType})`;
             } else {
                 document.getElementById('soilCorrectedCapacity').textContent = 'N/A';
             }
-            
-            document.getElementById('finalGroupFactor').textContent = groupReductionFactor.toFixed(3);
-            document.getElementById('finalCapacity').textContent = finalCapacity.toFixed(1);
-            document.getElementById('cablesRequired').textContent = cablesRequired;
-            document.getElementById('totalCapacity').textContent = totalCapacity.toFixed(1);
-            
+
+            document.getElementById('finalGroupFactor').textContent = `${groupReductionFactor.toFixed(3)} (${groupingTableUsed})`;
+            document.getElementById('finalCapacity').textContent = finalCapacityPerCable.toFixed(1);
+            document.getElementById('cablesRequired').textContent = cablesRequired === Infinity ? 'Error' : cablesRequired;
+            document.getElementById('totalCapacity').textContent = cablesRequired === Infinity ? 'Error' : totalCapacity.toFixed(1);
+
             document.getElementById('iterationSteps').innerHTML = iterationSteps;
             document.getElementById('result').style.display = 'block';
         }
-        
+
         // Show reference tables
         function showSelectedTable() {
+            // ... (keep existing showSelectedTable function, ensure B.52.18/19 titles are clear) ...
             const tableId = document.getElementById('tableSelector').value;
             let tableHTML = '';
-            
+
             switch(tableId) {
-                case 'B.52.2':
-                    tableHTML = `
-                        <h3>Table B.52.2 - PVC insulation, two loaded conductors, copper or aluminium</h3>
-                        <p>Conductor temperature: 70 °C, ambient temperature: 30 °C in air, 20 °C in ground</p>
-                        <table>
-                            <tr>
-                                <th>Size (mm²)</th>
-                                <th>A1</th>
-                                <th>A2</th>
-                                <th>B1</th>
-                                <th>B2</th>
-                                <th>C</th>
-                                <th>D1</th>
-                                <th>D2</th>
-                            </tr>
-                            ${generateTableRows(cableData['PVC_2']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}
-                        </table>
-                        <p class="note">Note: Values for aluminium conductors are approximately 20-25% lower than copper.</p>
-                    `;
-                    break;
-                case 'B.52.3':
-                    tableHTML = `
-                        <h3>Table B.52.3 - XLPE/EPR insulation, two loaded conductors, copper or aluminium</h3>
-                        <p>Conductor temperature: 90 °C, ambient temperature: 30 °C in air, 20 °C in ground</p>
-                        <table>
-                            <tr>
-                                <th>Size (mm²)</th>
-                                <th>A1</th>
-                                <th>A2</th>
-                                <th>B1</th>
-                                <th>B2</th>
-                                <th>C</th>
-                                <th>D1</th>
-                                <th>D2</th>
-                            </tr>
-                            ${generateTableRows(cableData['XLPE_2']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}
-                        </table>
-                        <p class="note">Note: Values for aluminium conductors are approximately 20-25% lower than copper.</p>
-                    `;
-                    break;
-                case 'B.52.4':
-                    tableHTML = `
-                        <h3>Table B.52.4 - PVC insulation, three loaded conductors, copper or aluminium</h3>
-                        <p>Conductor temperature: 70 °C, ambient temperature: 30 °C in air, 20 °C in ground</p>
-                        <table>
-                            <tr>
-                                <th>Size (mm²)</th>
-                                <th>A1</th>
-                                <th>A2</th>
-                                <th>B1</th>
-                                <th>B2</th>
-                                <th>C</th>
-                                <th>D1</th>
-                                <th>D2</th>
-                            </tr>
-                            ${generateTableRows(cableData['PVC_3']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}
-                        </table>
-                        <p class="note">Note: Values for aluminium conductors are approximately 20-25% lower than copper.</p>
-                    `;
-                    break;
-                case 'B.52.5':
-                    tableHTML = `
-                        <h3>Table B.52.5 - XLPE/EPR insulation, three loaded conductors, copper or aluminium</h3>
-                        <p>Conductor temperature: 90 °C, ambient temperature: 30 °C in air, 20 °C in ground</p>
-                        <table>
-                            <tr>
-                                <th>Size (mm²)</th>
-                                <th>A1</th>
-                                <th>A2</th>
-                                <th>B1</th>
-                                <th>B2</th>
-                                <th>C</th>
-                                <th>D1</th>
-                                <th>D2</th>
-                            </tr>
-                            ${generateTableRows(cableData['XLPE_3']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}
-                        </table>
-                        <p class="note">Note: Values for aluminium conductors are approximately 20-25% lower than copper.</p>
-                    `;
-                    break;
-                case 'B.52.14':
-                    tableHTML = `
-                        <h3>Table B.52.14 - Correction factor for ambient air temperatures other than 30 °C</h3>
-                        <table>
-                            <tr>
-                                <th>Ambient temperature (°C)</th>
-                                <th>PVC</th>
-                                <th>XLPE and EPR</th>
-                                <th>Mineral (70°C)</th>
-                                <th>Mineral (105°C)</th>
-                            </tr>
-                            <tr><td>10</td><td>1.22</td><td>1.15</td><td>1.26</td><td>1.14</td></tr>
-                            <tr><td>15</td><td>1.17</td><td>1.12</td><td>1.20</td><td>1.11</td></tr>
-                            <tr><td>20</td><td>1.12</td><td>1.08</td><td>1.14</td><td>1.07</td></tr>
-                            <tr><td>25</td><td>1.06</td><td>1.04</td><td>1.07</td><td>1.04</td></tr>
-                            <tr><td>30</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr>
-                            <tr><td>35</td><td>0.94</td><td>0.96</td><td>0.93</td><td>0.96</td></tr>
-                            <tr><td>40</td><td>0.87</td><td>0.91</td><td>0.85</td><td>0.92</td></tr>
-                            <tr><td>45</td><td>0.79</td><td>0.87</td><td>0.78</td><td>0.88</td></tr>
-                            <tr><td>50</td><td>0.71</td><td>0.82</td><td>0.67</td><td>0.84</td></tr>
-                            <tr><td>55</td><td>0.61</td><td>0.76</td><td>0.57</td><td>0.80</td></tr>
-                            <tr><td>60</td><td>0.50</td><td>0.71</td><td>0.45</td><td>0.75</td></tr>
-                        </table>
-                    `;
-                    break;
-                case 'B.52.15':
-                    tableHTML = `
-                        <h3>Table B.52.15 - Correction factors for ambient ground temperatures other than 20 °C</h3>
-                        <table>
-                            <tr>
-                                <th>Ground temperature (°C)</th>
-                                <th>PVC</th>
-                                <th>XLPE and EPR</th>
-                            </tr>
-                            <tr><td>10</td><td>1.10</td><td>1.07</td></tr>
-                            <tr><td>15</td><td>1.05</td><td>1.04</td></tr>
-                            <tr><td>20</td><td>1.00</td><td>1.00</td></tr>
-                            <tr><td>25</td><td>0.95</td><td>0.96</td></tr>
-                            <tr><td>30</td><td>0.89</td><td>0.93</td></tr>
-                            <tr><td>35</td><td>0.84</td><td>0.89</td></tr>
-                            <tr><td>40</td><td>0.77</td><td>0.85</td></tr>
-                            <tr><td>45</td><td>0.71</td><td>0.80</td></tr>
-                            <tr><td>50</td><td>0.63</td><td>0.76</td></tr>
-                            <tr><td>55</td><td>0.55</td><td>0.71</td></tr>
-                            <tr><td>60</td><td>0.45</td><td>0.65</td></tr>
-                        </table>
-                    `;
-                    break;
-                case 'B.52.16':
-                    tableHTML = `
-                        <h3>Table B.52.16 - Correction factors for soil thermal resistivities other than 2.5 K·m/W</h3>
-                        <table>
-                            <tr>
-                                <th>Thermal resistivity (K·m/W)</th>
-                                <th>Cables in buried ducts</th>
-                                <th>Direct buried cables</th>
-                            </tr>
-                            <tr><td>0.5</td><td>1.28</td><td>1.88</td></tr>
-                            <tr><td>0.7</td><td>1.20</td><td>1.62</td></tr>
-                            <tr><td>1.0</td><td>1.18</td><td>1.50</td></tr>
-                            <tr><td>1.5</td><td>1.10</td><td>1.28</td></tr>
-                            <tr><td>2.0</td><td>1.05</td><td>1.12</td></tr>
-                            <tr><td>2.5</td><td>1.00</td><td>1.00</td></tr>
-                            <tr><td>3.0</td><td>0.96</td><td>0.90</td></tr>
-                        </table>
-                    `;
-                    break;
-                case 'B.52.17':
-                    tableHTML = `
-                        <h3>Table B.52.17 - Reduction factors for groups of circuits or multi-core cables</h3>
-                        <table>
-                            <tr>
-                                <th>Number of circuits/cables</th>
-                                <th>Reduction factor</th>
-                            </tr>
-                            <tr><td>1</td><td>1.00</td></tr>
-                            <tr><td>2</td><td>0.80</td></tr>
-                            <tr><td>3</td><td>0.70</td></tr>
-                            <tr><td>4</td><td>0.65</td></tr>
-                            <tr><td>5</td><td>0.60</td></tr>
-                            <tr><td>6</td><td>0.57</td></tr>
-                            <tr><td>7</td><td>0.54</td></tr>
-                            <tr><td>8</td><td>0.52</td></tr>
-                            <tr><td>9</td><td>0.50</td></tr>
-                            <tr><td>12</td><td>0.45</td></tr>
-                            <tr><td>16</td><td>0.41</td></tr>
-                            <tr><td>20</td><td>0.38</td></tr>
-                        </table>
-                    `;
-                    break;
-                case 'B.52.18':
-                    tableHTML = `
-                        <h3>Table B.52.18 - Reduction factors for cables laid directly in the ground (Method D2)</h3>
-                        <table>
-                            <tr>
-                                <th>Number of circuits</th>
-                                <th>Touching</th>
-                                <th>1× cable diameter</th>
-                                <th>0.125 m</th>
-                                <th>0.25 m</th>
-                                <th>0.5 m</th>
-                            </tr>
-                            <tr><td>2</td><td>0.75</td><td>0.80</td><td>0.85</td><td>0.90</td><td>0.90</td></tr>
-                            <tr><td>3</td><td>0.65</td><td>0.70</td><td>0.75</td><td>0.80</td><td>0.85</td></tr>
-                            <tr><td>4</td><td>0.60</td><td>0.60</td><td>0.70</td><td>0.75</td><td>0.80</td></tr>
-                            <tr><td>5</td><td>0.55</td><td>0.55</td><td>0.65</td><td>0.70</td><td>0.80</td></tr>
-                            <tr><td>6</td><td>0.50</td><td>0.55</td><td>0.60</td><td>0.70</td><td>0.80</td></tr>
-                            <tr><td>7</td><td>0.45</td><td>0.51</td><td>0.59</td><td>0.67</td><td>0.76</td></tr>
-                            <tr><td>8</td><td>0.43</td><td>0.48</td><td>0.57</td><td>0.65</td><td>0.75</td></tr>
-                            <tr><td>9</td><td>0.41</td><td>0.46</td><td>0.55</td><td>0.63</td><td>0.74</td></tr>
-                            <tr><td>12</td><td>0.36</td><td>0.42</td><td>0.51</td><td>0.59</td><td>0.71</td></tr>
-                            <tr><td>16</td><td>0.32</td><td>0.38</td><td>0.47</td><td>0.56</td><td>0.38</td></tr>
-                            <tr><td>20</td><td>0.29</td><td>0.35</td><td>0.44</td><td>0.53</td><td>0.66</td></tr>
-                        </table>
-                    `;
-                    break;
-                case 'B.52.19':
-                    tableHTML = `
-                        <h3>Table B.52.19 - Reduction factors for cables laid in ducts in the ground (Method D1)</h3>
-                        <table>
-                            <tr>
-                                <th>Number of cables</th>
-                                <th>Ducts touching</th>
-                                <th>0.25 m clearance</th>
-                                <th>0.5 m clearance</th>
-                                <th>1.0 m clearance</th>
-                            </tr>
-                            <tr><td>2</td><td>0.85</td><td>0.90</td><td>0.95</td><td>0.95</td></tr>
-                            <tr><td>3</td><td>0.75</td><td>0.85</td><td>0.90</td><td>0.95</td></tr>
-                            <tr><td>4</td><td>0.70</td><td>0.80</td><td>0.85</td><td>0.90</td></tr>
-                            <tr><td>5</td><td>0.65</td><td>0.80</td><td>0.85</td><td>0.90</td></tr>
-                            <tr><td>6</td><td>0.60</td><td>0.80</td><td>0.80</td><td>0.90</td></tr>
-                            <tr><td>7</td><td>0.57</td><td>0.76</td><td>0.80</td><td>0.88</td></tr>
-                            <tr><td>8</td><td>0.54</td><td>0.74</td><td>0.78</td><td>0.88</td></tr>
-                            <tr><td>9</td><td>0.52</td><td>0.73</td><td>0.77</td><td>0.87</td></tr>
-                            <tr><td>10</td><td>0.49</td><td>0.72</td><td>0.76</td><td>0.86</td></tr>
-                            <tr><td>11</td><td>0.47</td><td>0.70</td><td>0.75</td><td>0.86</td></tr>
-                            <tr><td>12</td><td>0.45</td><td>0.69</td><td>0.74</td><td>0.85</td></tr>
-                        </table>
-                    `;
-                    break;
+                case 'B.52.2': tableHTML = `<h3>Table B.52.2 - PVC insulation, two loaded conductors, copper or aluminium</h3><p>Conductor temperature: 70 °C, ambient temperature: 30 °C in air, 20 °C in ground</p><table><tr><th>Size (mm²)</th><th>A1</th><th>A2</th><th>B1</th><th>B2</th><th>C</th><th>D1</th><th>D2</th></tr>${generateTableRows(cableData['PVC_2']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}</table><p class="note">Note: Values for aluminium conductors are approx. 20-25% lower.</p>`; break;
+                case 'B.52.3': tableHTML = `<h3>Table B.52.3 - XLPE/EPR insulation, two loaded conductors, copper or aluminium</h3><p>Conductor temperature: 90 °C, ambient temperature: 30 °C in air, 20 °C in ground</p><table><tr><th>Size (mm²)</th><th>A1</th><th>A2</th><th>B1</th><th>B2</th><th>C</th><th>D1</th><th>D2</th></tr>${generateTableRows(cableData['XLPE_2']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}</table><p class="note">Note: Values for aluminium conductors are approx. 20-25% lower.</p>`; break;
+                case 'B.52.4': tableHTML = `<h3>Table B.52.4 - PVC insulation, three loaded conductors, copper or aluminium</h3><p>Conductor temperature: 70 °C, ambient temperature: 30 °C in air, 20 °C in ground</p><table><tr><th>Size (mm²)</th><th>A1</th><th>A2</th><th>B1</th><th>B2</th><th>C</th><th>D1</th><th>D2</th></tr>${generateTableRows(cableData['PVC_3']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}</table><p class="note">Note: Values for aluminium conductors are approx. 20-25% lower.</p>`; break;
+                case 'B.52.5': tableHTML = `<h3>Table B.52.5 - XLPE/EPR insulation, three loaded conductors, copper or aluminium</h3><p>Conductor temperature: 90 °C, ambient temperature: 30 °C in air, 20 °C in ground</p><table><tr><th>Size (mm²)</th><th>A1</th><th>A2</th><th>B1</th><th>B2</th><th>C</th><th>D1</th><th>D2</th></tr>${generateTableRows(cableData['XLPE_3']['copper'], ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2'])}</table><p class="note">Note: Values for aluminium conductors are approx. 20-25% lower.</p>`; break;
+                case 'B.52.14': tableHTML = `<h3>Table B.52.14 - Correction factor for ambient air temperatures other than 30 °C</h3><table><tr><th>Ambient temp (°C)</th><th>PVC (70°C)</th><th>XLPE/EPR (90°C)</th><th>Mineral (70°C)</th><th>Mineral (105°C)</th></tr><tr><td>10</td><td>1.22</td><td>1.15</td><td>1.26</td><td>1.14</td></tr><tr><td>15</td><td>1.17</td><td>1.12</td><td>1.20</td><td>1.11</td></tr><tr><td>20</td><td>1.12</td><td>1.08</td><td>1.14</td><td>1.07</td></tr><tr><td>25</td><td>1.06</td><td>1.04</td><td>1.07</td><td>1.04</td></tr><tr><td>30</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td></tr><tr><td>35</td><td>0.94</td><td>0.96</td><td>0.93</td><td>0.96</td></tr><tr><td>40</td><td>0.87</td><td>0.91</td><td>0.85</td><td>0.92</td></tr><tr><td>45</td><td>0.79</td><td>0.87</td><td>0.78</td><td>0.88</td></tr><tr><td>50</td><td>0.71</td><td>0.82</td><td>0.67</td><td>0.84</td></tr><tr><td>55</td><td>0.61</td><td>0.76</td><td>0.57</td><td>0.80</td></tr><tr><td>60</td><td>0.50</td><td>0.71</td><td>0.45</td><td>0.75</td></tr></table>`; break;
+                case 'B.52.15': tableHTML = `<h3>Table B.52.15 - Correction factors for ambient ground temperatures other than 20 °C</h3><table><tr><th>Ground temp (°C)</th><th>PVC (70°C)</th><th>XLPE/EPR (90°C)</th></tr><tr><td>10</td><td>1.10</td><td>1.07</td></tr><tr><td>15</td><td>1.05</td><td>1.04</td></tr><tr><td>20</td><td>1.00</td><td>1.00</td></tr><tr><td>25</td><td>0.95</td><td>0.96</td></tr><tr><td>30</td><td>0.89</td><td>0.93</td></tr><tr><td>35</td><td>0.84</td><td>0.89</td></tr><tr><td>40</td><td>0.77</td><td>0.85</td></tr><tr><td>45</td><td>0.71</td><td>0.80</td></tr><tr><td>50</td><td>0.63</td><td>0.76</td></tr><tr><td>55</td><td>0.55</td><td>0.71</td></tr><tr><td>60</td><td>0.45</td><td>0.65</td></tr></table>`; break;
+                case 'B.52.16': tableHTML = `<h3>Table B.52.16 - Correction factors for soil thermal resistivities other than 2.5 K·m/W</h3><table><tr><th>Thermal resistivity (K·m/W)</th><th>Cables in buried ducts (D1)</th><th>Direct buried cables (D2)</th></tr><tr><td>0.5</td><td>1.28</td><td>1.88</td></tr><tr><td>0.7</td><td>1.20</td><td>1.62</td></tr><tr><td>1.0</td><td>1.18</td><td>1.50</td></tr><tr><td>1.5</td><td>1.10</td><td>1.28</td></tr><tr><td>2.0</td><td>1.05</td><td>1.12</td></tr><tr><td>2.5</td><td>1.00</td><td>1.00</td></tr><tr><td>3.0</td><td>0.96</td><td>0.90</td></tr></table>`; break;
+                case 'B.52.17': tableHTML = `<h3>Table B.52.17 - Reduction factors for groups (General - Not for D1/D2 Grouping)</h3><table><tr><th>Number of circuits/cables</th><th>Reduction factor</th></tr><tr><td>1</td><td>1.00</td></tr><tr><td>2</td><td>0.80</td></tr><tr><td>3</td><td>0.70</td></tr><tr><td>4</td><td>0.65</td></tr><tr><td>5</td><td>0.60</td></tr><tr><td>6</td><td>0.57</td></tr><tr><td>7</td><td>0.54</td></tr><tr><td>8</td><td>0.52</td></tr><tr><td>9</td><td>0.50</td></tr><tr><td>12</td><td>0.45</td></tr><tr><td>16</td><td>0.41</td></tr><tr><td>20</td><td>0.38</td></tr></table><p class="note">Applies to cables on trays, ladders, cleats, etc. For buried cables use B.52.18 or B.52.19.</p>`; break;
+                case 'B.52.18': tableHTML = `<h3>Table B.52.18 - Reduction factors for cables laid directly in the ground (Method D2 Grouping)</h3><table><tr><th>Number of circuits</th><th>Touching</th><th>1× dia.</th><th>0.125 m</th><th>0.25 m</th><th>0.5 m</th></tr><tr><td>2</td><td>0.75</td><td>0.80</td><td>0.85</td><td>0.90</td><td>0.90</td></tr><tr><td>3</td><td>0.65</td><td>0.70</td><td>0.75</td><td>0.80</td><td>0.85</td></tr><tr><td>4</td><td>0.60</td><td>0.60</td><td>0.70</td><td>0.75</td><td>0.80</td></tr><tr><td>5</td><td>0.55</td><td>0.55</td><td>0.65</td><td>0.70</td><td>0.80</td></tr><tr><td>6</td><td>0.50</td><td>0.55</td><td>0.60</td><td>0.70</td><td>0.80</td></tr><tr><td>7</td><td>0.45</td><td>0.51</td><td>0.59</td><td>0.67</td><td>0.76</td></tr><tr><td>8</td><td>0.43</td><td>0.48</td><td>0.57</td><td>0.65</td><td>0.75</td></tr><tr><td>9</td><td>0.41</td><td>0.46</td><td>0.55</td><td>0.63</td><td>0.74</td></tr><tr><td>12</td><td>0.36</td><td>0.42</td><td>0.51</td><td>0.59</td><td>0.71</td></tr><tr><td>16</td><td>0.32</td><td>0.38</td><td>0.47</td><td>0.56</td><td>0.68</td></tr><tr><td>20</td><td>0.29</td><td>0.35</td><td>0.44</td><td>0.53</td><td>0.66</td></tr></table><p class="note">Horizontal spacing between centres of cables/circuits.</p>`; break;
+                case 'B.52.19': tableHTML = `<h3>Table B.52.19 - Reduction factors for cables laid in ducts in the ground (Method D1 Grouping)</h3><table><tr><th>Number of cables/ducts</th><th>Ducts touching</th><th>0.25 m</th><th>0.5 m</th><th>1.0 m</th></tr><tr><td>2</td><td>0.85</td><td>0.90</td><td>0.95</td><td>0.95</td></tr><tr><td>3</td><td>0.75</td><td>0.85</td><td>0.90</td><td>0.95</td></tr><tr><td>4</td><td>0.70</td><td>0.80</td><td>0.85</td><td>0.90</td></tr><tr><td>5</td><td>0.65</td><td>0.80</td><td>0.85</td><td>0.90</td></tr><tr><td>6</td><td>0.60</td><td>0.80</td><td>0.80</td><td>0.90</td></tr><tr><td>7</td><td>0.57</td><td>0.76</td><td>0.80</td><td>0.88</td></tr><tr><td>8</td><td>0.54</td><td>0.74</td><td>0.78</td><td>0.88</td></tr><tr><td>9</td><td>0.52</td><td>0.73</td><td>0.77</td><td>0.87</td></tr><tr><td>10</td><td>0.49</td><td>0.72</td><td>0.76</td><td>0.86</td></tr><tr><td>11</td><td>0.47</td><td>0.70</td><td>0.75</td><td>0.86</td></tr><tr><td>12</td><td>0.45</td><td>0.69</td><td>0.74</td><td>0.85</td></tr></table><p class="note">Horizontal spacing between centres of ducts.</p>`; break;
             }
-            
+
             document.getElementById('tableDisplay').innerHTML = tableHTML;
         }
-        
+
         // Helper function to generate table rows
         function generateTableRows(data, methods) {
+             // ... (keep existing generateTableRows function) ...
             const sizes = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300];
             let rows = '';
-            
+
             for (let i = 0; i < sizes.length; i++) {
                 let row = `<tr><td>${sizes[i]}</td>`;
-                
+
                 for (const method of methods) {
-                    const value = data[method][i];
-                    row += `<td>${value !== null ? value : '-'}</td>`;
+                    const value = data[method] ? data[method][i] : null; // Check if method exists for this data
+                    row += `<td>${(value !== null && value !== undefined) ? value : '-'}</td>`;
                 }
-                
+
                 row += '</tr>';
                 rows += row;
             }
-            
+
             return rows;
         }
+
+        // Initial population of the first reference table
+        showSelectedTable();
+
     </script>
 </body>
 </html>
