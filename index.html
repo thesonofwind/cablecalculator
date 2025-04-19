@@ -130,24 +130,17 @@
             <div id="result" class="result" style="display:none;">
                 <h3>Results</h3>
                 <p><strong>Selected Cable Capacity (Base):</strong> <span id="selectedCapacity"></span> A</p>
-                <p><strong>After Temperature Correction:</strong> <span id="tempCorrectedCapacity"></span></p> {/* Removed 'A' unit - added in breakdown */}
-                <p><strong>After Soil Resistivity Correction (if applicable):</strong> <span id="soilCorrectedCapacity"></span></p> {/* Removed 'A' unit */}
+                <p><strong>After Temperature Correction:</strong> <span id="tempCorrectedCapacity"></span></p>
+                <p><strong>After Soil Resistivity Correction (if applicable):</strong> <span id="soilCorrectedCapacity"></span></p>
                 <p><strong>Final Grouping Reduction Factor:</strong> <span id="finalGroupFactor"></span></p>
                 <p><strong>Final Cable Capacity After Grouping (per cable):</strong> <span id="finalCapacity"></span> A</p>
                 <p><strong>Number of Cables Required:</strong> <span id="cablesRequired"></span></p>
                 <p><strong>Total Capacity:</strong> <span id="totalCapacity"></span> A</p>
 
-                {/* Calculation Breakdown Area */}
-                <div id="calculation-breakdown" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;">
-                    {/* Content will be added by JS */}
-                </div>
+                <div id="calculation-breakdown" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;"></div>
 
-                {/* Grouping Iteration Area */}
-                <div id="iterationSteps">
-                     {/* Grouping iterations will appear here */}
-                </div>
+                <div id="iterationSteps"></div>
 
-                {/* Error Message Area */}
                 <div id="error-message" style="color: red; margin-top: 10px; font-weight:bold;"></div>
             </div>
         </div>
