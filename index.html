@@ -21,7 +21,8 @@
             <form id="calculator-form">
                 <div class="form-group">
                     <label for="loadCurrent">Load Current (A):</label>
-                    <input type="number" id="loadCurrent" step="any" min="0.01" required>
+                    {/* Changed step to 1 to allow integers like 2000 */}
+                    <input type="number" id="loadCurrent" step="1" min="0.01" required>
                 </div>
 
                 <div class="form-group">
@@ -130,14 +131,25 @@
             <div id="result" class="result" style="display:none;">
                 <h3>Results</h3>
                 <p><strong>Selected Cable Capacity (Base):</strong> <span id="selectedCapacity"></span> A</p>
-                <p><strong>After Temperature Correction:</strong> <span id="tempCorrectedCapacity"></span> A</p>
-                <p><strong>After Soil Resistivity Correction (if applicable):</strong> <span id="soilCorrectedCapacity"></span> A</p>
+                <p><strong>After Temperature Correction:</strong> <span id="tempCorrectedCapacity"></span></p> {/* Removed 'A' unit - added in breakdown */}
+                <p><strong>After Soil Resistivity Correction (if applicable):</strong> <span id="soilCorrectedCapacity"></span></p> {/* Removed 'A' unit */}
                 <p><strong>Final Grouping Reduction Factor:</strong> <span id="finalGroupFactor"></span></p>
                 <p><strong>Final Cable Capacity After Grouping (per cable):</strong> <span id="finalCapacity"></span> A</p>
                 <p><strong>Number of Cables Required:</strong> <span id="cablesRequired"></span></p>
                 <p><strong>Total Capacity:</strong> <span id="totalCapacity"></span> A</p>
-                <div id="iterationSteps"></div>
-                <div id="error-message" style="color: red; margin-top: 10px;"></div>
+
+                {/* Calculation Breakdown Area */}
+                <div id="calculation-breakdown" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;">
+                    {/* Content will be added by JS */}
+                </div>
+
+                {/* Grouping Iteration Area */}
+                <div id="iterationSteps">
+                     {/* Grouping iterations will appear here */}
+                </div>
+
+                {/* Error Message Area */}
+                <div id="error-message" style="color: red; margin-top: 10px; font-weight:bold;"></div>
             </div>
         </div>
 
